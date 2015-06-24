@@ -1,0 +1,98 @@
+.login-form-div{
+	width: 300px;
+	height: 300px;
+	padding-top: 20px;
+	border: 1px solid #d7dce5;
+	background-color:white; 
+}
+
+.login-form-title{
+	width: 300px;
+	height: 100px;
+}
+
+.login-form-table-text{
+	width: 70px;
+}
+
+.login-button{
+	margin-top: 20px;
+}
+table tr{
+	height: 25px;
+}
+
+.login-form-title{
+	height: 30px;
+	vertical-align:middle;
+}
+
+.login-error{
+	margin-top: 20px;
+	color: red;
+	text-weight: bold;
+	text-align:center;
+}
+
+
+
+/* ========================================================
+   Login form by Ellie
+   ===================================================== */
+.login-form-div2{
+	position: relative; 
+	cursor: pointer;
+	top: -66px;
+	left: 222px;
+	width: 190px;
+	height: 130px;
+	padding-top: 20px;
+	border: 0px solid #d7dce5;
+	background-color:none; 
+}
+
+.login-form-table-text2{
+	width: 55px;
+	color:#E9EFF8;
+}
+
+.button2{
+	float:left;
+	position:relative;
+	background:#eeeeee;
+	border:0px dotted #d4d4d4;
+	padding:13px;
+	margin-top:10px;
+}
+
+input, label {
+  font-family: 'Helvetica Neue', 돋움, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 60;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+input[type=text], input[type=password] {
+  padding: 0 10px;
+  width: 75px;
+  height: 24px;
+  color: #bbb;
+  text-shadow: 1px 1px 1px #000;
+  background: rgba(0, 0, 0, 0.16);
+  border: 0;
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.06);
+}
+input[type=text]:focus, input[type=password]:focus {
+  color: #E9EFF8;
+  background: rgba(0, 0, 0, 0.1);
+  outline: 0;
+}
+
+.lt-ie9 input[type=text], .lt-ie9 input[type=password] {
+  line-height: 20px;
+  background: #282828;
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renew_etc">
+	
+	<select id="get_not_email_user" resultType="java.util.HashMap">
+		select * from User
+		where email is null
+	</select>
+	
+	<update id="testasd" parameterType="java.util.HashMap">
+		update User set
+		email = #{email}
+		where id = #{uid}
+	</update>
+	
+	<update id="main_updatetime_set" parameterType="java.util.HashMap">
+		update Hospital set
+		updateDate = now()
+		where id = 318
+	</update>
+	
+</mapper>

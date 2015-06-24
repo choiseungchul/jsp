@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="userhospitalview">
+
+    <select id="searchMostViewHospitalByHospitalId" parameterType="java.util.Map" resultType="kr.co.zadusoft.contents.model.HospitalModel">
+    	SELECT
+			H.*, SUM(UV1.viewCount) totalViewCount 
+		FROM
+			UserHospitalView UV1, UserHospitalView UV2, Hospital H
+		WHERE 
+			UV2.hospitalId = #{hospitalId}
+			AND UV2.viewDate >= subdate( now(), INTERVAL 7 DAY)
+			AND UV1.userId = UV2.userId
+			AND UV1.viewDate >= subdate( now(), INTERVAL 7 DAY)
+			AND UV1.hospitalId = H.id
+		GROUP BY UV1.hospitalId 
+		ORDER BY totalViewCount DESC
+		LIMIT 0,3;
+	</select>
+	
+</mapper>

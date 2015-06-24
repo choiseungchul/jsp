@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<project name="sslvpn" default="comfile">
+	<description>
+		Web Portal
+	</description>
+	
+	<!-- mkdir dest -->
+	<property name="target.dir" location="E:/ANT/sslvpn"></property>
+	
+	<property name="src.dir" location="E:/project/SSLVPN/trunk/ssl_vpn_v1.0/src"></property>
+	<property name="dest.dir" location="E:/ANT/sslvpn/ROOT/WEB-INF/classes"></property>
+	<property name="src.jsp.dir" location="E:/project/SSLVPN/trunk/ssl_vpn_v1.0/WebContent"></property>
+	<property name="dest.jsp.dir" location="E:/ANT/sslvpn/ROOT"></property>
+	
+	<!-- tomcat library --> 
+	<property name="master_classpath" location="E:/Tomcat 6.0/lib"></property>
+	<!-- ext library -->
+	<property name="classpath" location="E:/project/SSLVPN/trunk/ssl_vpn_v1.0/WebContent/WEB-INF/lib"></property>
+	 
+	<target name="makedir">
+		<mkdir dir="${target.dir}/ROOT"/>
+		<mkdir dir="${target.dir}/ROOT/WEB-INF"/>
+		<mkdir dir="${target.dir}/ROOT/WEB-INF/classes"/>
+		<mkdir dir="${target.dir}/ROOT/WEB-INF/lib"/>
+	</target>
+	
+	<path id="master-classpath">
+      <fileset dir="${master_classpath}">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+	<path id="classpath">
+      <fileset dir="${classpath}">
+        <include name="*.jar"/>
+      </fileset>
+    </path>
+	
+	<!-- Java Comfile and JSP Copy -->
+	<target name="comfile" depends="makedir">
+		<javac srcdir="${src.dir}" destdir="${dest.dir}" encoding="UTF-8">
+			<classpath refid="master-classpath"/>
+			<classpath refid="classpath"/>
+		</javac>
+		<copy todir="${dest.jsp.dir}">
+			<fileset dir="${src.jsp.dir}">
+				<include name="**/*"></include>
+			</fileset>
+		</copy> 
+	</target>
+		
+	
+</project>

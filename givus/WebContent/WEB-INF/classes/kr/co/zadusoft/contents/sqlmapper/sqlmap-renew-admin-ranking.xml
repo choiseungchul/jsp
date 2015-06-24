@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="admin_ranking">
+	
+	<!-- 랭킹 목록 -->
+	<select id="get_list" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT * FROM givus.Ranking
+		<if test="st_date != null">
+		WHERE startDate &gt;= #{st_date} and endDate &lt;= ${ed_date}
+		</if>
+		order by createDate desc
+		limit #{start}, #{end}	 
+	</select>
+	<!-- 랭킹 숫자 -->
+	<select id="get_count" resultType="java.lang.Integer">
+		SELECT count(*) FROM givus.Ranking
+		<if test="st_date != null">
+		WHERE startDate &gt;= #{st_date} and endDate &lt;= #{ed_date} 		
+		</if>
+	</select>
+	
+	
+	
+	<!-- 병원보기 -->
+	<select id="get_rank" resultType="java.util.HashMap">
+		select  * from RankingData where rankingId = #{rid}
+		order by ranking asc
+	</select>	
+	
+	<!-- 지역코드 -->
+	<select id="get_location" resultType="java.util.HashMap">
+		select * from Code 
+		where category = 'L'
+		order by sort asc
+	</select>
+	
+	<!-- 병원 수정 -->
+	<update id="mod_hospital" parameterType="java.util.HashMap">
+    	UPDATE Hospital SET 
+        			name = #{name}, tel = #{tel}, address = #{address},
+        			introduction = #{intro}, specialistCount = #{specialistCount}, anestheticCount = #{anestheticCount}, publishDate = #{publishDate},
+        			homepage = #{homepage}, patientRoom = #{patientRoom}, recoveryRoom = #{recoveryRoom}, interpreter = #{interpreter}, pickupService = #{pickupService},
+        			mostOperation1 = #{mostOperation1}, mostOperation2 = #{mostOperation2}, scale = #{scale}, counselCount = #{counselCount},
+        			reviewPicCount = #{reviewPicCount}, foreignerReg = #{foreignerReg}, possibleSurgery = #{possibleSurgery}, hours = #{hours}, fax = #{fax},
+        			address1 = #{address1}, address2 = #{address2}, business_id = #{business_id}, postalCode = #{post}, locationCode = #{location},
+        			grade = #{grade}, totalPoint = #{totalPoint}, expertPoint = #{expertPoint}, safePoint = #{safePoint}, satisfyPoint = #{satisfyPoint},
+        			sizePoint = #{sizePoint}, convenientPoint = #{convenientPoint}
+    	WHERE id = #{hid}
+    </update>    
+    <update id="mod_hstat" parameterType="java.util.HashMap">
+		UPDATE HospitalStats SET		
+			oralDoctorCount = #{hstat1}, dentalDoctorCount = #{hstat2}, breastDoctorCount = #{hstat3}, orthodonticDoctorCount = #{hstat4},
+			otolaryngologyDoctorCount = #{hstat5}, surgeryDoctorCount = #{hstat6}, plasticSurgeryDoctorCount = #{hstat7}, anestheticDoctorCount = #{hstat8},
+			familyMedicineDoctorCount = #{hstat9}, generalDoctorCount = #{hstat10}, clinicalDoctorCount = #{hstat11}, obesityDoctorCount = #{hstat12},
+			dermatologistDoctorCount = #{hstat13}, prostheticDoctorCount = #{hstat14}, implantsDoctorCount = #{hstat15}, obstetricsDoctorCount = #{hstat16}						 
+		WHERE hospitalId = #{hid}
+	</update>
+	<!-- 승인여부 수정 -->
+	<update id="mod_h_awc" parameterType="java.util.HashMap">
+		UPDATE UserConnectHospital SET		
+			status = #{status}, description = #{reason_desc}, approvalDate = now()						 
+		WHERE hospitalId = #{hid}
+	</update>
+	
+	
+	
+</mapper>

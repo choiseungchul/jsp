@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+	>
+	<bean id="topMenuSetDefault" class="dynamic.web.view.MenuSet">
+		<property name="url" value="menu.do"/>
+		<property name="defaultTarget" value="dynamic_left"/>
+		<property name="icon" value="simple_arrow"/>
+	</bean>
+	
+	<bean id="funcTopMenu" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="ATMA"/>
+		<property name="url" value="func.do"/>
+		<property name="ids">
+			<list>
+				<value>f{topMenuManageSet}</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="topMenuManageSet" class="dynamic.web.view.MenuSet" init-method="init" parent="topMenuSetDefault">
+		<property name="id" value="ATMB"/>
+		<property name="title" value="탑메뉴"/>
+		<property name="view" value="dynamic/web/topMenu"/>
+		<property name="menus">
+			<list>
+				<ref bean="funcTopBoardManageSet"/>
+<!-- 				<ref bean="funcTopMessageManageSet"/> -->
+				<ref bean="funcTopHospitalManageSet"/>
+				<ref bean="funcTopUserManageSet"/>
+				<ref bean="funcTopEventManageSet"/>
+				<ref bean="funcTopKeywordManageSet"/>
+				<ref bean="funcTopCodeManageSet"/>
+				<ref bean="funcTopAdvertisementManageSet"/>
+				<ref bean="funcTopRoleManageSet"/>
+				
+			</list>
+		</property>
+	</bean>	
+
+	<bean id="funcTopBoardManageSet" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="ATMC"/>
+		<property name="title" value="게시판관리"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="url" value="func.do"/>
+		<property name="role" value="contentsManager"/>
+		<property name="ids">
+			<list>
+				<value>f{leftMenuBoardManageSet}</value>
+				<value>f{leftMenuCategoryManageSet}</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcTopMessageManageSet" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="ATMD"/>
+		<property name="title" value="쪽지 관리"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="url" value="func.do"/>
+		<property name="role" value="systemManager"/>
+		<property name="ids">
+			<list>
+				<value>f{leftMenuMessageManageSet}</value>
+			</list>
+		</property>
+	</bean>	
+	<bean id="funcTopHospitalManageSet" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="ATME"/>
+		<property name="title" value="병원정보 관리"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="url" value="func.do"/>
+		<property name="ids">
+			<list>
+				<value>f{leftMenuHospitalManageSet}</value>
+				<value>f{leftMenuRankingManageSet}</value>
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="funcTopUserManageSet" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="ATMF"/>
+		<property name="title" value="사용자 관리"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="url" value="func.do"/>
+		<property name="role" value="systemManager"/>
+		<property name="ids">
+			<list>
+				<value>f{leftMenuUserManageSet}</value>
+				<value>f{leftMenuConHospitalManageSet}</value>
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="funcTopKeywordManageSet" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="ATMG"/>
+		<property name="title" value="키워드 관리"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="url" value="func.do"/>
+		<property name="role" value="systemManager"/>
+		<property name="ids">
+			<list>
+				<value>f{leftMenuKeywordManageSet}</value>
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="funcTopCodeManageSet" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="ATMH"/>
+		<property name="title" value="코드 관리"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="url" value="func.do"/>
+		<property name="role" value="systemManager"/>
+		<property name="ids">
+			<list>
+				<value>f{leftMenuCodeManageSet}</value>
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="funcTopEventManageSet" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="ATMI"/>
+		<property name="title" value="이벤트 관리"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="url" value="func.do"/>
+		<property name="role" value="systemManager"/>
+		<property name="ids">
+			<list>
+				<value>f{leftMenuEventManageSet}</value>
+			</list>
+		</property>
+	</bean>	
+	
+	<bean id="funcTopAdvertisementManageSet" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="ATMJ"/>
+		<property name="title" value="광고 관리"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="url" value="func.do"/>
+		<property name="role" value="systemManager"/>
+		<property name="ids">
+			<list>
+				<value>f{leftMenuAdvertisementManageSet}</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="funcTopRoleManageSet" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="ATMK"/>
+		<property name="title" value="권한 관리"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="url" value="func.do"/>
+		<property name="role" value="systemManager"/>
+		<property name="ids">
+			<list>
+				<value>f{leftMenuRoleManageSet}</value>
+			</list>
+		</property>
+	</bean>
+</beans>

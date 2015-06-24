@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="postingcategory">
+
+	<select id="searchCountInPostingCategory" parameterType="java.util.Map" resultType="kr.co.zadusoft.contents.model.PostingCategoryModel">
+		SELECT 
+			PC.*, count( P.id) postingCount
+		FROM
+			PostingCategory PC 
+		LEFT OUTER JOIN Posting P ON PC.id = P.categoryId
+		WHERE
+			PC.boardId = #{boardId}
+			AND isDelete = 'N'
+		GROUP BY
+			PC.id
+	</select>
+	
+</mapper>

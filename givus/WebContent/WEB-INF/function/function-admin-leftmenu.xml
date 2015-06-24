@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+	>
+
+	<bean id="menuSetDefault" class="dynamic.web.view.MenuSet">
+		<property name="url" value="menu.do"/>
+		<property name="defaultTarget" value="dynamic_right"/>
+		<property name="icon" value="simple_arrow"/>
+	</bean>
+	
+	
+	<bean id="leftMenuBoardManageSet" class="dynamic.web.view.MenuSet" init-method="init" parent="menuSetDefault">
+		<property name="id" value="ALMA"/>
+		<property name="title" value="게시판"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="menus">
+			<list>
+				<ref bean="funcBoardCreate"/>
+				<ref bean="funcBoardList"/>
+			</list>
+		</property>
+	</bean>
+	
+<!-- 	<bean id="leftMenuMessageManageSet" class="dynamic.web.view.MenuSet" init-method="init" parent="menuSetDefault"> -->
+<!-- 		<property name="id" value="ALMC"/> -->
+<!-- 		<property name="title" value="쪽지"/> -->
+<!-- 		<property name="view" value="dynamic/web/leftMenu"/> -->
+<!-- 		<property name="menus"> -->
+<!-- 			<list> -->
+<!-- 				<ref bean="funcMessageCreate"/> -->
+<!-- 				<ref bean="funcMessageList"/> -->
+<!-- 				<ref bean="funcMessageSendList"/> -->
+<!-- 				<ref bean="funcMessageReceiveList"/> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean>	 -->
+	
+	<bean id="leftMenuHospitalManageSet" class="dynamic.web.view.MenuSet" init-method="init" parent="menuSetDefault">
+		<property name="id" value="ALMD"/>
+		<property name="title" value="병원정보"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="menus">
+			<list>
+				<ref bean="funcHospitalCreate"/>
+				<ref bean="funcHospitalList"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="leftMenuUserManageSet" class="dynamic.web.view.MenuSet" init-method="init" parent="menuSetDefault">
+		<property name="id" value="ALME"/>
+		<property name="title" value="사용자"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="menus">
+			<list>
+				<ref bean="funcUserList"/>
+				<ref bean="funcGeneralUserList"/>
+				<ref bean="funcHospitalUserList"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="leftMenuCodeManageSet" class="dynamic.web.view.MenuSet" init-method="init" parent="menuSetDefault">
+		<property name="id" value="ALMF"/>
+		<property name="title" value="코드관리"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="menus">
+			<list>
+				<ref bean="menuLocationCodeManage"/>
+				<ref bean="funcHospitalPRGalleryEdit"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="leftMenuKeywordManageSet" class="dynamic.web.view.MenuSet" init-method="init" parent="menuSetDefault">
+		<property name="id" value="ALMG"/>
+		<property name="title" value="키워드"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="menus">
+			<list>
+				<ref bean="funcKeywordCreate"/>
+				<ref bean="funcKeywordList"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="leftMenuCategoryManageSet" class="dynamic.web.view.MenuSet" init-method="init" parent="menuSetDefault">
+		<property name="id" value="ALMH"/>
+		<property name="title" value="메뉴"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="menus">
+			<list>
+				<ref bean="funcCategoryList"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="leftMenuRankingManageSet" class="dynamic.web.view.MenuSet" init-method="init" parent="menuSetDefault">
+		<property name="id" value="ALMI"/>
+		<property name="title" value="병원랭킹"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="menus">
+			<list>
+				<ref bean="funcRankingListTop100"/>
+				<ref bean="funcRankingListSeoulTop50"/>
+				<ref bean="funcRankingListCityTop10"/>
+				<ref bean="funcRankingListPartTop10"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="leftMenuEventManageSet" class="dynamic.web.view.MenuSet" init-method="init" parent="menuSetDefault">
+		<property name="id" value="ALMJ"/>
+		<property name="title" value="이벤트 관리"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="menus">
+			<list>
+				<ref bean="funcHospitalEventEdit"/>
+				<ref bean="funcHospitalEventList"/>
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="menuLocationCodeManage" class="dynamic.web.view.Menu">
+		<!-- <property name="id" value="ALMK"/> -->
+		<property name="title" value="지역코드 관리"/>
+		<property name="icon" value="simple_arrow"/>
+		<property name="useContextPath" value="true"/>
+		<property name="url" value="/list.do?fid=COA&amp;category=L"/>
+		<property name="role" value="systemManager"/>
+	</bean>
+	
+	<bean id="leftMenuAdvertisementManageSet" class="dynamic.web.view.MenuSet" init-method="init" parent="menuSetDefault">
+		<property name="id" value="ALML"/>
+		<property name="title" value="광고 관리"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="menus">
+			<list>
+				<ref bean="funcAdvertisementCreate"/>
+				<ref bean="funcAdvertisementList"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="leftMenuConHospitalManageSet" class="dynamic.web.view.MenuSet" init-method="init" parent="menuSetDefault">
+		<property name="id" value="ALMM"/>
+		<property name="title" value="병원연결신청"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="menus">
+			<list>
+				<ref bean="funcUserConHospitalCreate"/>
+				<ref bean="funcUserConHospitalWaitList"/>
+				<ref bean="funcUserConHospitalTerminateList"/>
+				<ref bean="funcUserConHospitalList"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="leftMenuRoleManageSet" class="dynamic.web.view.MenuSet" init-method="init" parent="menuSetDefault">
+		<property name="id" value="ALMN"/>
+		<property name="title" value="권한관리"/>
+		<property name="view" value="dynamic/web/leftMenu"/>
+		<property name="menus">
+			<list>
+				<ref bean="funcRoleList"/>
+			</list>
+		</property>
+	</bean>
+</beans>

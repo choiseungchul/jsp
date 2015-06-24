@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	>
+	
+	<bean id="funcHospitalEventViewList" parent="funcDefault">
+		<property name="id" value="HEVA"/>
+		<property name="title" value="이벤트 목록"/>
+		<property name="header" value="num:50, hospitalId, hospitalName, event, minPrice, maxPrice"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.HospitalEventViewModel"/>
+		<property name="view" value="dynamic/web/table"/>
+		<property name="pageSize" value="10"/>
+		<property name="url" value="list.do"/>
+		<property name="useStripe" value="true"/>
+		<property name="dao" ref="hospitalEventViewService"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.hospitalevent.minPrice"/>
+				<ref bean="render.hospitalevent.maxPrice"/>
+			</list>
+		</property>
+	</bean>
+	 
+	<bean id="render.hospitalevent.minPrice" class="dynamic.web.view.RenderNumber">
+		<property name="name" value="minPrice"/>
+		<property name="numberFormat" value="#,##0원"/>
+	</bean>
+	
+	<bean id="render.hospitalevent.maxPrice" class="dynamic.web.view.RenderNumber">
+		<property name="name" value="maxPrice"/>
+		<property name="numberFormat" value="#,##0원"/>
+	</bean>
+</beans>

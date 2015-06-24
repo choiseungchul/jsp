@@ -1,0 +1,119 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd"
+        default-autowire="byName">
+
+	<bean id="boardDAO" class="kr.co.zadusoft.contents.dao.BoardDAO"/>    
+	<bean id="boardService" class="kr.co.zadusoft.contents.service.BoardService"/>
+	
+	<bean id="codeDAO" class="kr.co.zadusoft.contents.dao.CodeDAO"/>    
+	<bean id="codeService" class="kr.co.zadusoft.contents.service.CodeService"/>
+
+	<bean id="commentDAO" class="kr.co.zadusoft.contents.dao.CommentDAO"/>    
+	<bean id="commentService" class="kr.co.zadusoft.contents.service.CommentService"/>
+	
+	<bean id="fileDAO" class="kr.co.zadusoft.contents.dao.FileDAO"/>    
+	<bean id="fileService" class="kr.co.zadusoft.contents.service.FileService"/>
+
+	<bean id="hospitalKeywordDAO" class="kr.co.zadusoft.contents.dao.HospitalKeywordDAO"/>    
+	<bean id="hospitalKeywordService" class="kr.co.zadusoft.contents.service.HospitalKeywordService"/>
+
+	<bean id="hospitalDAO" class="kr.co.zadusoft.contents.dao.HospitalDAO"/>    
+	<bean id="hospitalService" class="kr.co.zadusoft.contents.service.HospitalService"/>
+	
+	<bean id="hospitalStatsDAO" class="kr.co.zadusoft.contents.dao.HospitalStatsDAO"/>    
+	<bean id="hospitalStatsService" class="kr.co.zadusoft.contents.service.HospitalStatsService"/>
+	
+	<bean id="hospitalEvaluationDAO" class="kr.co.zadusoft.contents.dao.HospitalEvaluationDAO"/>    
+	<bean id="hospitalEvaluationService" class="kr.co.zadusoft.contents.service.HospitalEvaluationService"/>
+	
+	<bean id="keywordDAO" class="kr.co.zadusoft.contents.dao.KeywordDAO"/>    
+	<bean id="keywordService" class="kr.co.zadusoft.contents.service.KeywordService"/>
+
+	<bean id="messageQueueDAO" class="kr.co.zadusoft.contents.dao.MessageQueueDAO"/>    
+	<bean id="messageQueueService" class="kr.co.zadusoft.contents.service.MessageQueueService"/>
+	
+	<bean id="messageReceiveDAO" class="kr.co.zadusoft.contents.dao.MessageReceiveDAO"/>    
+	<bean id="messageReceiveService" class="kr.co.zadusoft.contents.service.MessageReceiveService"/>
+	
+	<bean id="messageSendDAO" class="kr.co.zadusoft.contents.dao.MessageSendDAO"/>    
+	<bean id="messageSendService" class="kr.co.zadusoft.contents.service.MessageSendService"/>
+	
+	<bean id="messageRelationDAO" class="kr.co.zadusoft.contents.dao.MessageRelationDAO"/>    
+	<bean id="messageRelationService" class="kr.co.zadusoft.contents.service.MessageRelationService"/>
+	
+	<bean id="operationPriceDAO" class="kr.co.zadusoft.contents.dao.OperationPriceDAO"/>    
+	<bean id="operationPriceService" class="kr.co.zadusoft.contents.service.OperationPriceService"/>
+
+	<bean id="operationDAO" class="kr.co.zadusoft.contents.dao.OperationDAO"/>    
+	<bean id="operationService" class="kr.co.zadusoft.contents.service.OperationService"/>
+
+	<bean id="postingDAO" class="kr.co.zadusoft.contents.dao.PostingDAO"/>    
+	<bean id="postingService" class="kr.co.zadusoft.contents.service.PostingService"/>
+
+	<bean id="rankingDataDAO" class="kr.co.zadusoft.contents.dao.RankingDataDAO"/>    
+	<bean id="rankingDataService" class="kr.co.zadusoft.contents.service.RankingDataService"/>
+
+	<bean id="rankingDAO" class="kr.co.zadusoft.contents.dao.RankingDAO"/>    
+	<bean id="rankingService" class="kr.co.zadusoft.contents.service.RankingService"/>
+
+	<bean id="statisticsDAO" class="kr.co.zadusoft.contents.dao.StatisticsDAO"/>    
+	<bean id="statisticsService" class="kr.co.zadusoft.contents.service.StatisticsService"/>
+
+	<bean id="userHospitalViewDAO" class="kr.co.zadusoft.contents.dao.UserHospitalViewDAO"/>    
+	<bean id="userHospitalViewService" class="kr.co.zadusoft.contents.service.UserHospitalViewService"/>
+
+	<bean id="userKeywordDAO" class="kr.co.zadusoft.contents.dao.UserKeywordDAO"/>    
+	<bean id="userKeywordService" class="kr.co.zadusoft.contents.service.UserKeywordService"/>
+
+	<bean id="userDAO" class="kr.co.zadusoft.contents.dao.UserDAO"/>    
+	<bean id="userService" class="kr.co.zadusoft.contents.service.UserService"/>
+	
+	<bean id="postingUserActionDAO" class="kr.co.zadusoft.contents.dao.PostingUserActionDAO"/>    
+	<bean id="postingUserActionService" class="kr.co.zadusoft.contents.service.PostingUserActionService"/>
+	
+	<bean id="postingCategoryDAO" class="kr.co.zadusoft.contents.dao.PostingCategoryDAO"/>    
+	<bean id="postingCategoryService" class="kr.co.zadusoft.contents.service.PostingCategoryService"/>
+	
+	<bean id="categoryDAO" class="kr.co.zadusoft.contents.dao.CategoryDAO"/>    
+	<bean id="categoryService" class="kr.co.zadusoft.contents.service.CategoryService"/>
+	
+	<bean id="zipcodeDAO" class="kr.co.zadusoft.contents.dao.ZipcodeDAO"/>    
+	<bean id="zipcodeService" class="kr.co.zadusoft.contents.service.ZipcodeService"/>
+
+	<bean id="zipcodeZibunDAO" class="kr.co.zadusoft.contents.dao.ZipcodeZibunDAO"/>    
+	<bean id="zipcodeZibunService" class="kr.co.zadusoft.contents.service.ZipcodeZibunService"/>
+	
+	<bean id="hospitalEventDAO" class="kr.co.zadusoft.contents.dao.HospitalEventDAO"/>    
+	<bean id="hospitalEventService" class="kr.co.zadusoft.contents.service.HospitalEventService"/>
+	
+	<bean id="hospitalEventUserActionDAO" class="kr.co.zadusoft.contents.dao.HospitalEventUserActionDAO"/>    
+	<bean id="hospitalEventUserActionService" class="kr.co.zadusoft.contents.service.HospitalEventUserActionService"/>
+	
+	<bean id="hospitalEventViewDAO" class="kr.co.zadusoft.contents.dao.HospitalEventViewDAO"/>    
+	<bean id="hospitalEventViewService" class="kr.co.zadusoft.contents.service.HospitalEventViewService"/>
+	
+	<bean id="advertisementDAO" class="kr.co.zadusoft.contents.dao.AdvertisementDAO"/>    
+	<bean id="advertisementService" class="kr.co.zadusoft.contents.service.AdvertisementService"/>
+	
+	<bean id="reviewPointsDAO" class="kr.co.zadusoft.contents.dao.ReviewPointsDAO"/>    
+	<bean id="reviewPointsService" class="kr.co.zadusoft.contents.service.ReviewPointsService"/>
+	
+	<bean id="userConnectHospitalDAO" class="kr.co.zadusoft.contents.dao.UserConnectHospitalDAO"/>    
+	<bean id="userConnectHospitalService" class="kr.co.zadusoft.contents.service.UserConnectHospitalService"/>
+
+	<bean id="roleDAO" class="kr.co.zadusoft.contents.dao.RoleDAO"/>    
+	<bean id="roleService" class="kr.co.zadusoft.contents.service.RoleService"/>
+	
+	<bean id="roleUserDAO" class="kr.co.zadusoft.contents.dao.RoleUserDAO"/>    
+	<bean id="roleUserService" class="kr.co.zadusoft.contents.service.RoleUserService"/>
+	
+</beans>
+

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renew_ranking">
+	
+	<select id="top50" resultType="java.util.HashMap">
+		SELECT h.*, rk.* FROM Hospital as h 
+		left join RankingData as rk
+		on h.id = rk.hospitalId
+		left join UserConnectHospital as uc
+		on h.id = uc.hospitalId
+		where h.publishDate &lt;= now() and uc.status = 'A'		
+		group by rk.hospitalId
+		order by h.totalPoint desc
+		limit #{start}, #{limit};
+	</select>
+	
+	<!-- 지역별 랭킹 -->
+	<select id="top50byLoc" resultType="java.util.HashMap">
+		SELECT h.*, rk.* FROM Hospital as h 
+		left join RankingData as rk
+		on h.id = rk.hospitalId
+		left join UserConnectHospital as uc
+		on h.id = uc.hospitalId
+		where h.publishDate &lt;= now() and uc.status = 'A' AND
+		h.locationCode = #{location} 
+		group by rk.hospitalId
+		order by h.totalPoint desc
+		limit #{start}, #{limit};
+	</select>
+	
+	<!-- 전체랭킹 -->
+	<select id="top50_rankbox" resultType="java.util.HashMap">
+		SELECT rk.ranking, rk.grade, rk.totalPoint, rk.safePoint, rk.expertPoint, rk.satisfyPoint, rk.hospitalId, 
+		rk.sizePoint, rk.convinientPoint, rk.rankingChange, ho.name FROM 
+		RankingData rk left join Hospital as ho on rk.hospitalId = ho.id 
+		where rk.createDate >= date('2014-04-13') group by hospitalId order by ranking
+		limit #{start}, #{limit};
+	</select>
+	
+	<!-- 지역별 랭킹 -->
+	<select id="top50byLoc_rankbox" resultType="java.util.HashMap">
+		SELECT rk.ranking, rk.grade, rk.totalPoint, rk.safePoint, rk.expertPoint, rk.satisfyPoint, rk.hospitalId, 
+		rk.sizePoint, rk.convinientPoint,  rk.rankingChange, ho.name FROM 
+		RankingData rk left join Hospital as ho on rk.hospitalId = ho.id 
+		where rk.createDate >= date('2014-04-13') AND ho.locationCode = #{location} group by hospitalId order by ranking
+		limit #{start}, #{limit};
+	</select>
+	
+	<!-- 부위별 랭킹 -->
+	<select id="top50bySurg" resultType="java.util.HashMap">
+		SELECT h.*,  r.* FROM givus.Hospital as h
+		left join RankingData as r 
+		on h.id = r.hospitalId
+		where ${point} is not null 
+		group by h.id
+		order by r.createDate, ${point} DESC
+		limit #{start}, #{limit};
+	</select>
+	
+	<!-- 최근 업데이트 별 -->
+	<select id="updatedHos" resultType="java.util.HashMap">
+		SELECT * FROM Hospital
+		where publishDate is not null 
+		and publishDate &lt; now()
+		order by updateDate desc limit 0, 10;
+	</select>
+	
+	<!-- 최근 등록순 -->
+	<select id="recentHos" resultType="java.util.HashMap">
+		SELECT * FROM Hospital 
+		where publishDate is not null
+		and publishDate &lt; now()
+		order by createDate desc limit 0, 10;
+	</select>
+	
+	<!-- 랭킹별 병원조회 -->
+	<select id="get_hospitals_by_rank" resultType="java.util.HashMap">		
+		SELECT 
+			ho.name, ho.id, ho.tel, ho.address, ho.introduction,
+		    ho.mostOperation1, ho.mostOperation2, ho.specialistCount, ho.anestheticCount,
+		    ho.ranking
+		FROM givus.Hospital as ho		 
+		WHERE ho.publishDate &lt;= now() order by ranking asc
+		limit #{start},#{end};
+	</select>
+	<!-- 랭킹별 병원조회 카운트 -->
+	<select id="get_hospitals_by_rank_count" resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM Hospital
+		WHERE publishDate &lt;= now()		
+	</select>
+	<!-- 최근 업데이트 병원 카운트 -->
+	<select id="get_updated_hospitals_count" resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM Hospital
+		WHERE updateDate &gt; DATE_ADD(now(), interval -1 week)		
+	</select>
+	<!-- 최근 병원 업데이트 시간 -->
+	<select id="get_recent_updated_time" resultType="java.util.Date">
+		SELECT updateDate
+		FROM Hospital
+		order by updateDate desc
+		limit 0,1;
+	</select>
+	
+	<!-- 병원썸네일 조회 -->
+	<select id="get_hospital_thumbs" resultType="java.util.HashMap">
+		SELECT id, relationId FROM File where relationId IN ( ${ids} ) and relationType = 'hospital'
+	</select>
+	
+	<!-- 임시로 만든거 -->
+	<insert id="input_hospital_connect" parameterType="java.util.HashMap">
+		insert into UserConnectHospital 
+		(
+			hospitalId, userId, requestDate, approvalDate, approver, status, description
+		)
+		values
+		(
+			#{hid}, 1, now(), now(), 'givus@givus.co.kr', 'A', ''
+		)
+	</insert>
+	
+	<!-- 랭킹 타이틀 가져오기 -->	
+	<select id="get_recent_rank_one" parameterType="java.util.HashMap" resultType="kr.co.zadusoft.contents.model.RankingModel">
+		SELECT * FROM Ranking
+		WHERE 
+			id = ( 
+				SELECT MAX(id) FROM Ranking WHERE rankingType = #{rankingType}
+				<if test="rankingLocationCode != null">
+					AND rankingLocationCode = #{rankingLocationCode}
+				</if>
+				)
+	</select>
+	
+	<select id="get_recent_rank_one_by_part" parameterType="java.util.HashMap" resultType="kr.co.zadusoft.contents.model.RankingModel">
+		SELECT * FROM Ranking
+		WHERE 
+			id = ( 
+				SELECT MAX(id) FROM Ranking WHERE rankingType = #{rankingType}
+					AND rankingPartCode = #{rankingPartCode}
+				)
+	</select>
+	
+	<select id="searchRankingDataByRanking" parameterType="java.util.HashMap" resultType="kr.co.zadusoft.contents.model.RankingDataModel">
+		SELECT 
+			RD.*, H.name hospitalName
+		FROM Hospital H, RankingData RD
+		WHERE 
+			H.id = RD.hospitalId AND
+			<foreach collection="conditions" item="condition" open="(" separator="AND" close=")">
+				${condition.prefix} RD.${condition.name} ${condition.option} #{condition.value} ${condition.suffix}
+			</foreach>
+		ORDER BY
+			RD.ranking ASC
+		<if test="limitStart >= 0">
+		LIMIT #{limitStart}, #{limitSize}
+		</if>
+	</select>
+	
+	<!-- 랭킹목록 불러오기 -->
+	<select id="get_rankingdata_by_rid" parameterType="java.util.HashMap" resultType="kr.co.zadusoft.contents.model.RankingDataModel">
+		SELECT * 
+		FROM RankingData
+		where rankingId = #{rid}
+		<if test="limitStart >= 0">
+		LIMIT #{limitStart}, #{limitSize}
+		</if>
+	</select>	
+	<select id="countRankingDataByRanking" parameterType="java.util.HashMap" resultType="Integer">
+		SELECT 
+			COUNT(RD.id)
+		FROM Hospital H, RankingData RD
+		WHERE 
+			H.id = RD.hospitalId AND
+			<foreach collection="conditions" item="condition" open="(" separator="AND" close=")">
+				${condition.prefix} RD.${condition.name} ${condition.option} #{condition.value} ${condition.suffix}
+			</foreach>
+	</select>
+	
+	<!-- 새로운 랭킹 타이틀 넣기 -->
+	<insert id="input_ranking_title" parameterType="java.util.HashMap" >
+		insert into Ranking 
+		(name, createDate, creator, rankingType, startDate, endDate, rankingLocationCode, rankingPartCode )
+		values
+		( #{name}, now(), 'server', #{rtype}, #{sdate}, #{edate}, #{locationCode}, #{partCode} )
+		<selectKey keyProperty="rid" resultType="java.lang.Integer">
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+	<!-- 랭킹 데이터 넣기 -->
+	<insert id="input_ranking_data" parameterType="java.util.HashMap" >
+		insert into RankingData
+		( 
+			name, createDate, creator, ranking, grade, totalPoint, expertPoint, safePoint, satisfyPoint, sizePoint, convinientPoint, 
+			hospitalId, rankingId, rankingChange, eyePoint, nosePoint, facePoint, breastPoint, bodyPoint, petitPoint
+		)
+		values
+		(
+			#{name}, now(), 'server', #{ranking}, #{grade}, #{totalPoint}, #{expertPoint}, #{safePoint}, #{satisfyPoint}, #{sizePoint}, #{convenientPoint},
+			#{hid}, #{rid}, #{rankingChange}, #{eyePoint}, #{nosePoint}, #{facePoint}, #{breastPoint}, #{bodyPoint}, #{petitPoint}
+		)
+	</insert>
+	
+	<!-- 지역코드 -->
+	<select id="get_location" resultType="java.util.HashMap">
+		select * from Code 
+		where category = 'L'
+		order by sort asc
+	</select>
+	
+	<!-- 부위코드 -->
+	<select id="get_parts" resultType="java.util.HashMap">
+		select * from Code 
+		where category = 'P'
+		order by sort asc
+	</select>
+	
+</mapper>

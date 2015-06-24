@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+	
+    <insert id="insert" parameterType="kr.co.zadusoft.contents.model.BoardModel">
+    	INSERT INTO Board (
+        			name,
+        			createDate,
+        			creator,
+        			updateDate,
+        			updator,
+        			boardType,
+        			useAttachmentFile,
+        			useComment,
+        			useRecommend,
+        			usePostingCategory,
+        			attachmentFileCount,
+        			attachmentFileSize,
+        			description
+            	
+    	)VALUES(
+        			#{name},
+        			#{createDate},
+        			#{creator},
+        			#{updateDate},
+        			#{updator},
+        			#{boardType},
+        			#{useAttachmentFile},
+        			#{useComment},
+        			#{useRecommend},
+        			#{usePostingCategory},
+        			#{attachmentFileCount},
+        			#{attachmentFileSize},
+        			#{description}
+            
+    	)
+    	<selectKey keyProperty="id" resultType="java.lang.Integer">	
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>	
+    </insert>
+		
+	<update id="update" parameterType="kr.co.zadusoft.contents.model.BoardModel">
+		UPDATE Board SET
+        			name = #{name},
+        			createDate = #{createDate},
+        			creator = #{creator},
+        			updateDate = #{updateDate},
+        			updator = #{updator},
+        			boardType = #{boardType},
+        			useAttachmentFile = #{useAttachmentFile},
+        			useComment = #{useComment},
+        			useRecommend = #{useRecommend},
+        			usePostingCategory = #{usePostingCategory},
+        			attachmentFileCount = #{attachmentFileCount},
+        			attachmentFileSize = #{attachmentFileSize},
+        			description = #{description}
+        		WHERE
+		id = #{id}
+	</update>
+	
+	<update id="updateByCondition" parameterType="param">
+		UPDATE Board SET
+	        ${fieldName} = #{fieldValue}
+	    <include refid="where_conditions"/>
+	</update>
+	
+	<delete id="delete" parameterType="java.lang.Integer">
+		DELETE FROM Board WHERE id = #{id}
+	</delete>
+	
+	<delete id="deleteByCondition" parameterType="param">
+		DELETE FROM Board
+		<include refid="where_conditions"/>
+	</delete>
+	
+	<select id="search" parameterType="param" resultType="kr.co.zadusoft.contents.model.BoardModel">
+		SELECT ${selectField} 
+		FROM Board 
+		<include refid="where_conditions"/>
+		<if test="orderCondition != null">
+		ORDER BY ${orderCondition}
+		</if>
+		<if test="limitStart >= 0">
+		LIMIT #{limitStart}, #{limitSize}
+		</if>
+	</select>
+	
+	<select id="count" resultType="java.lang.Integer" parameterType="param">
+		SELECT COUNT(id)
+		FROM Board
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="get" parameterType="java.lang.Integer" resultType="kr.co.zadusoft.contents.model.BoardModel">
+		SELECT * 
+		FROM Board 
+		WHERE id = #{id}
+	</select>
+	
+	<select id="getNoCache" parameterType="java.lang.Integer" resultType="kr.co.zadusoft.contents.model.BoardModel">
+		SELECT * 
+		FROM Board 
+		WHERE id = #{id}
+	</select>
+	
+	<select id="getNoCacheWithParam" parameterType="param" resultType="kr.co.zadusoft.contents.model.BoardModel">
+		SELECT * 
+		FROM Board 
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="getByCondition" resultType="kr.co.zadusoft.contents.model.BoardModel" parameterType="param">
+		SELECT *
+		FROM Board
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="getFieldByCondition" resultType="java.lang.Object" parameterType="param">
+		SELECT ${fieldName}
+		FROM Board
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="exist" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT COUNT( id)
+		FROM Board
+		WHERE id = #{id}
+	</select>
+	
+	<select id="existByCondition" resultType="java.lang.Integer" parameterType="param">
+		SELECT COUNT( id)
+		FROM Board
+		<include refid="where_conditions"/>
+	</select>
+	
+	<sql id="where_conditions">
+		<if test="conditions != null">
+		<where>
+			<foreach collection="conditions" item="condition" open="(" separator="AND" close=")">
+				${condition.prefix} ${condition.name} ${condition.option} #{condition.value} ${condition.suffix}
+			</foreach>
+		</where>
+		</if>
+	</sql>
+</mapper>

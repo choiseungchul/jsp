@@ -1,0 +1,125 @@
+.calendar-table{
+	margin-bottom: 20px;
+}
+
+.calendar-td{
+	border-bottom: 1px solid #d7dce5;
+}
+
+.calendar-day, 
+.calendar-sunday, 
+.calendar-saturday,
+.calendar-nullday
+{
+	/* width: 125px;
+	height: 125px;*/
+	border: 1px solid #d7dce5;
+	color: #454545;
+	margin: 2px;
+}
+
+.calendar-day-date, 
+.calendar-sunday-date, 
+.calendar-saturday-date
+{
+	font-weight: bold;
+	font-family: 'Times New Roman';
+	text-align: right;
+	font-size: 15pt;
+	border-bottom: 1px solid #d7dce5;
+	margin-bottom: 5px;
+	padding-right: 5px;
+}
+
+.calendar-nullday{
+	border : 1px solid white;
+}
+/*
+.calendar-sunday{
+	color:red;
+}
+
+.calendar-saturday{
+	color:blue;
+}
+*/
+.calendar-days{
+	float: left;
+}
+.calendar-dateinfo{
+	margin-left: 5px;
+	float: left;
+}
+.calendar-year{
+	color: #454545;
+	font-size: 20pt;
+	font-weight: bold;
+	font-family: 'Times New Roman';
+	width: 100px;
+}
+
+.calendar-month{
+	color: #454545;
+	font-size: 30pt;
+	font-weight: bold;
+	font-family: 'Times New Roman';
+	font-style: italic;
+	width: 70px;
+}
+
+.calendar-title-div {
+	margin-bottom: 10px;
+}
+
+.calendar-button-div{
+/* 	margin-bottom: 10px; */
+	float: left;
+	margin-left: 10px;
+	margin-top: 20px;
+}
+
+.calendar th{
+	border: 1px solid #d7dce5;
+	border-top: 4px solid #d7dce5;
+	border-bottom: 2px solid #d7dce5;
+	height: 30px;
+}
+
+.calendar-header-td{
+	text-align:center;
+	
+}
+.calendar-list table{
+	width: 100%; 
+}
+.calendar-list table td{
+	color: #454545;
+	padding: 3px 3px 0px 3px;
+	
+	text-overflow: ellipsis; /* for browsers that supports it */  
+	-ms-text-overflow: ellipsis; /* for IE8 browsers that supports it */
+	overflow: hidden; /* for other browsers */
+	
+	white-space: nowrap; /* force one-line text */
+	border-bottom: 1px solid #d7dce5;
+}
+.calendar-list-table-td-hasFail{
+	background-color: #DC143C;
+}
+
+.calendar-list-table-td-hasFail span{
+	color: white;
+}
+
+.calendar-list-table-td-hasFail a:link {
+	color: white;
+	text-decoration: none;
+}
+.calendar-list-table-td-hasFail a:visited {
+	color: white;
+	text-decoration: none;
+}
+.calendar-list-table-td-hasFail a:hover {
+	color: white;
+	text-decoration: underline;
+}

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+	>
+	<bean id="funcRoleUserList" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="RUA"/>
+		<property name="title" value="사용자 목록"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.RoleUserModel"/>
+		<!-- header value must consist of model's properties [property name]:[column width]:[align]	-->
+		<property name="header" value="rnum:50, account:100:::사용자계정, id:*:::사용자이름, delete:100"/>
+		<property name="width" value="800"/>
+		<!-- view property used by viewResolver -->
+		<property name="view" value="dynamic/web/table"/>
+		<property name="url" value="list.do"/>
+		<property name="dao" ref="roleUserService"/>
+		<property name="useNavigation" value="true"/>
+		<property name="dependentFieldById" value="roleId"/>
+		<property name="pageSize" value="20"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.roleuser.delete"/>
+				<ref bean="render.roleuser.id"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+				<!-- <ref bean="button.roleuser.create"/> -->
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="funcRoleUserEdit" class="dynamic.web.func.Function" parent="funcRoleUserList">
+		<property name="id" value="RUB"/>
+		<property name="title" value="사용자 권한 추가"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.RoleUserModel"/>
+		<!-- header value must consist of model's properties [property name]:[column width]:[align]	-->
+		<property name="header" value="account:*:::사용자이름"/>
+		<!-- view property used by viewResolver -->
+		<property name="view" value="dynamic/web/edit"/>
+		<property name="successView" value="redirect:!{xpath}"/>
+		<property name="url" value="edit.do"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.user.account.relation"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- button -->
+<!-- 	<bean id="button.roleuser.create" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="사용자 추가"/>
+		<property name="link" value="/edit.do?fid=f{funcRoleUserEdit}&amp;roleId=#{id}&amp;action=create"/>
+		<property name="useXPath" value="true"/>
+	</bean>	 -->
+	
+	<!-- render -->
+	<bean id="render.roleuser.delete" class="dynamic.web.view.RenderButton">
+		<property name="name" value="delete"/>
+		<property name="icon" value="delete"/>
+		<property name="link" value="javascript:dynamic.roleuser.deleteRoleUser(p{id});"/>
+		<property name="useXPath" value="false"/>
+		<property name="useContextPath" value="false"/>
+	</bean>
+
+	<bean id="render.roleuser.account" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="account"/>
+		<property name="renderDAO" ref="userDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="name"/>
+		<property name="renderSearchField" value="account"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="account"/>
+	</bean>
+	
+	<bean id="render.roleuser.id" parent="render.user.account.relation">
+		<property name="name" value="id"/>
+		<property name="value" value="account"/>
+	</bean>
+	
+</beans>

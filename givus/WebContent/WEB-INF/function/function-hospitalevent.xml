@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	>
+	
+	<bean id="funcHospitalEventList" parent="funcDefault">
+		<property name="id" value="HEA"/>
+		<property name="title" value="이벤트 목록"/>
+		<property name="header" value="num:50, fileId:150, hospitalId:250, name:*:left, eventPrice:250, startDate:150, endDate:150, recommendCount:120"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.HospitalEventModel"/>
+		<property name="view" value="dynamic/web/table"/>
+		<property name="pageSize" value="20"/>
+		<property name="url" value="list.do"/>
+		<property name="useStripe" value="true"/>
+		<property name="dao" ref="hospitalEventService"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.hospital.id.relation"/>
+				<ref bean="render.hospitalevent.eventPrice"/>
+				<ref bean="render.hospitalevent.startDate"/>
+				<ref bean="render.hospitalevent.endDate"/>
+				<ref bean="render.hospitalevent.fileId"/>
+			</list>
+		</property>
+	</bean>
+	 
+	<bean id="funcHospitalEventEdit" parent="funcHospitalEventList">
+		<property name="id" value="HEB"/>
+		<property name="title" value="이벤트 등록"/>
+		<property name="header" value="hospitalId, name, fileId, eventPrice, startDate, endDate"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.HospitalEventModel"/>
+		<property name="view" value="dynamic/web/edit2"/>
+		<property name="url" value="edit.do"/>
+		<property name="width" value="1000"/>
+		<property name="successView" value="redirect:list.do?fid=f{funcHospitalEventList}"/>
+		<property name="role" value="systemManager"/>
+	</bean>
+	
+	<bean id="funcHospitalEventListOrderByRecommendCount" parent="funcHospitalEventList">
+		<property name="id" value="HEC"/>
+		<property name="header" value="rnum:50, fileId:150, hospitalId:250, name:*:left, eventPrice:250, startDate:150, endDate:150, recommendCount:120"/>
+		<property name="pageSize" value="3"/>
+		<property name="orderCondition" value="recommendCount DESC"/>
+	</bean>
+
+	
+	<!-- renders -->
+	<bean id="render.hospitalevent.fileId" class="kr.co.zadusoft.contents.view.RenderImage2">
+		<property name="name" value="fileId"/>
+		<property name="fileUploadHandler" ref="fileUploadHandler"/>
+		<property name="fileService" ref="fileService"/>
+	</bean>
+	
+	<bean id="render.hospitalevent.startDate" class="dynamic.web.view.RenderDate" parent="render.common.dateDefault">
+		<property name="name" value="startDate"/>
+		<property name="dateFormat" value="MM-dd"/>
+	</bean>
+	 
+	<bean id="render.hospitalevent.endDate" class="dynamic.web.view.RenderDate" parent="render.common.dateDefault">
+		<property name="name" value="endDate"/>
+		<property name="dateFormat" value="MM-dd"/>
+	</bean> 
+	
+	<bean id="render.hospitalevent.eventPrice" class="dynamic.web.view.RenderNumber">
+		<property name="name" value="eventPrice"/>
+		<property name="numberFormat" value="#,##0원"/>
+	</bean>
+</beans>

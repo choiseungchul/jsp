@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	>
+	
+	<bean id="funcRankingList" parent="funcDefault">
+		<property name="id" value="RA"/>
+		<property name="title" value="랭킹 목록"/>
+		<property name="header" value="num:50, name:*:left, startDate:120, endDate:120"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.RankingModel"/>
+		<property name="view" value="dynamic/web/table"/>
+		<property name="filter" value="name"/>
+<!-- 		<property name="sort" value="viewCount, createDate"/> -->
+		<property name="pageSize" value="20"/>
+		<property name="url" value="list.do"/>
+		<property name="dao" ref="rankingService"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.ranking.name"/>
+				<ref bean="render.ranking.startDate"/>
+				<ref bean="render.ranking.endDate"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcRankingListTop100" parent="funcRankingList">
+		<property name="id" value="RB"/>
+		<property name="title" value="전국 TOP 100"/>
+		<property name="conditions">
+			<list>
+				<ref bean="render.ranking.condition.rankingType.TOP100"/>
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="funcRankingListSeoulTop50" parent="funcRankingList">
+		<property name="id" value="RC"/>
+		<property name="title" value="서울 TOP 50"/>
+		<property name="conditions">
+			<list>
+				<ref bean="render.ranking.condition.rankingType.SeoulTop50"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcRankingListCityTop10" parent="funcRankingList">
+		<property name="id" value="RD"/>
+		<property name="title" value="광역시 TOP 10"/>
+		<property name="conditions">
+			<list>
+				<ref bean="render.ranking.condition.rankingType.CityTop10"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcRankingListPartTop10" parent="funcRankingList">
+		<property name="id" value="RE"/>
+		<property name="title" value="부위별 TOP 10"/>
+		<property name="conditions">
+			<list>
+				<ref bean="render.ranking.condition.rankingType.PartTop10"/>
+			</list>
+		</property>
+	</bean>
+		
+	<!-- renders -->
+	<bean id="render.ranking.name" class="dynamic.web.view.RenderText">
+		<property name="name" value="name"/>
+		<property name="link" value="/list.do?fid=f{funcRankingDataList}&amp;id=p{id}"/>
+		<property name="useContextPath" value="true"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="render.ranking.startDate" class="dynamic.web.view.RenderDate">
+		<property name="name" value="startDate"/>
+		<property name="dateFormat" value="yyyy-MM-dd"/>
+	</bean>
+	
+	<bean id="render.ranking.endDate" class="dynamic.web.view.RenderDate">
+		<property name="name" value="endDate"/>
+		<property name="dateFormat" value="yyyy-MM-dd"/>
+	</bean>
+	
+	<!-- conditions -->
+	<bean id="render.ranking.condition.rankingType.TOP100" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="rankingType"/>
+		<property name="value" value="A"/>
+	</bean>
+	
+	<bean id="render.ranking.condition.rankingType.SeoulTop50" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="rankingType"/>
+		<property name="value" value="B"/>
+	</bean>
+	
+	<bean id="render.ranking.condition.rankingType.CityTop10" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="rankingType"/>
+		<property name="value" value="C"/>
+	</bean>
+	
+	<bean id="render.ranking.condition.rankingType.PartTop10" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="rankingType"/>
+		<property name="value" value="D"/>
+	</bean>
+</beans>

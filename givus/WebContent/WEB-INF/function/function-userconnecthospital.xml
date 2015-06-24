@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+	>
+	
+	<bean id="funcUserConHospitalCreate" parent="funcDefault">
+		<property name="id" value="UCHA"/>
+		<property name="title" value="병원 연결 신청"/>
+		<property name="header" value="hospitalId, userId"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.UserConnectHospitalModel"/>
+		<property name="view" value="dynamic/web/edit2"/>
+		<!--property name="hiddenField" value="boardId:#!{bid}"/-->
+		<property name="url" value="edit.do"/>
+		<property name="width" value="1000"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcUserConHospitalList}"/>
+		<property name="dao" ref="userConnectHospitalService"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+				<ref bean="button.userconhospital.create"/>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+		<property name="renders">
+			<list>
+				<ref bean="render.hospital.id.relation"/>
+				<ref bean="render.user.id.hospitaluser.notcon.relation"/>
+				<!-- <ref bean="render.userconhospital.status"/> -->
+			</list>
+		</property>
+		<property name="validator" ref="validator.userconhospital.create"/>
+	</bean>
+	
+	<bean id="funcUserConHospitalList" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="UCHB"/>
+		<property name="title" value="전체 신청 목록"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.UserConnectHospitalModel"/>
+		<property name="dao" ref="userConnectHospitalService"/>
+		<!-- header value must consist of model's properties [property name]:[column width]:[align]	-->
+<!-- 		<property name="header" value="fileId:50, account:100, name:100, position:80, title:80, officePhone:80, mobile:120, email:*"/> -->
+		<property name="header" value="num:45, status:50, userId:80, hospitalId:100, requestDate:80, approvalDate:80"/>
+		<property name="view" value="dynamic/web/table"/>
+		<property name="url" value="list.do"/>
+		<property name="pageSize" value="20"/>
+		<property name="useNavigation" value="true"/>
+		<property name="role" value="systemManager"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.userconhospital.create"/>
+			</list>
+		</property>
+		<property name="renders">
+			<list>
+				<!-- <ref bean="render.hospital.id.relation"/> -->
+				<!-- <ref bean="render.user.id.relation"/> -->
+				<!-- <ref bean="render.userconhospital.userId"/> -->
+				<ref bean="render.userconhospital.hospitalId.relation"/>
+				<ref bean="render.userconhospital.userId.relation"/>
+				<ref bean="render.userconhospital.status"/>
+				<ref bean="render.userconhospital.num"/>
+				<ref bean="render.userconhospital.requestDate"/>
+				<ref bean="render.userconhospital.approvalDate"/>
+				<ref bean="render.user.approver.relation"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcUserConHospitalView" class="dynamic.web.func.Function" parent="funcUserConHospitalCreate">
+		<property name="id" value="UCHC"/>
+		<property name="title" value="신청 내용 조회"/>
+		<!-- header value must consist of model's properties [property name]:[column width]:[align]	-->
+		<property name="header" value="status, userId, hospitalId, requestDate, approvalDate, approver, description"/>
+		<!-- view property used by viewResolver -->
+		<property name="view" value="dynamic/web/view"/>
+		<property name="url" value="view.do"/>
+		<property name="role" value="systemManager"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.userconhospital.hospitalId.relation"/>
+				<!-- <ref bean="render.user.id.relation"/> -->
+				<ref bean="render.userconhospital.userId.relation2"/>
+				<ref bean="render.userconhospital.status"/>
+				<ref bean="render.userconhospital.requestDate"/>
+				<ref bean="render.userconhospital.approvalDate"/>
+				<ref bean="render.user.approver.relation"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+				<ref bean="button.userconhospital.modify"/>
+ 				<!-- <ref bean="button.user.lock"/> -->
+				<!-- <ref bean="button.user.delete"/> -->
+		<!-- 		<ref bean="button.user.disuse"/> -->
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcUserConHospitalApproval" class="dynamic.web.func.Function" parent="funcUserConHospitalView">
+		<property name="id" value="UCHD"/>
+		<property name="title" value="병원 연결 처리"/>
+		<!-- header value must consist of model's properties [property name]:[column width]:[align]	-->
+		<property name="header" value="status, description"/>
+		<!-- view property used by viewResolver -->
+		<property name="view" value="dynamic/web/edit"/>
+		<!-- <property name="getMethod" value="getByAccountForModify"/> -->
+		<property name="url" value="edit.do"/>
+		<property name="successView" value="redirect:!{service}"/>
+		<property name="validator" ref="validator.userconhospital.status"/>
+		<property name="messageKey" value="user_edit"/>
+		<property name="role" value="systemManager"/>
+		<property name="buttons"><null/>
+		</property>
+		<property name="renders">
+			<list>
+				<ref bean="render.userconhospital.status"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcUserConHospitalWaitList" class="dynamic.web.func.Function" parent="funcUserConHospitalList">
+		<property name="id" value="UCHE"/>
+		<property name="title" value="연결 대기 목록"/>
+		<property name="conditions">
+			<list>
+				<ref bean="condition.userconhospital.status.wait"/>
+			</list>
+		</property>
+	</bean>	
+	<bean id="funcUserConHospitalTerminateList" class="dynamic.web.func.Function" parent="funcUserConHospitalList">
+		<property name="id" value="UCHF"/>
+		<property name="title" value="처리 완료 목록"/>
+		<property name="conditions">
+			<list>
+				<ref bean="condition.userconhospital.status.terminate"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcUserConHospitalCreatePage" parent="funcUserConHospitalCreate">
+		<property name="id" value="UCHG"/>
+		<property name="header" value="hospitalId"/>
+		<property name="view" value="givus_user_conhospital_apply"/>
+		<property name="width" value="700"/>
+		<property name="hiddenField" value="pageType:h"/>
+		<property name="successView" value="redirect:/___/p/user/conHospital/apply"/>
+		
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+				<ref bean="button.userconhospital.create"/>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+		<property name="validator" ref="validator.userconhospital.create2"/>
+	</bean>
+	
+	
+	<!-- buttons -->
+	<bean id="button.userconhospital.create" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="병원 연결 신청"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="link" value="/edit.do?fid=f{funcUserConHospitalCreate}&amp;action=create"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	<bean id="button.userconhospital.modify" class="dynamic.web.view.Button">
+		<property name="name" value="modify"/>
+		<property name="title" value="신청 처리"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="link" value="/edit.do?fid=f{funcUserConHospitalApproval}&amp;action=modify&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>	
+	
+	<!-- renders -->	
+
+	<bean id="render.userconhospital.num" class="dynamic.web.view.RenderText">
+		<property name="name" value="id"/>
+		<property name="icon" value="link"/>
+		<property name="link" value="/view.do?fid=f{funcUserConHospitalView}&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+		<property name="useContextPath" value="true"/>
+	</bean>
+	<bean id="render.userconhospital.userId.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="userId"/>
+		<property name="renderDAO" ref="userDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="nickname"/>
+		<property name="renderSearchField" value="id"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="id"/>
+		<!-- use link -->
+		<property name="icon" value="link"/>
+		<property name="link" value="/view.do?fid=f{funcUserConHospitalView}&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+		<property name="useContextPath" value="true"/>
+	</bean>
+	
+	<bean id="render.userconhospital.userId.relation2" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="userId"/>
+		<property name="renderDAO" ref="userDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="nickname"/>
+		<property name="renderSearchField" value="id"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="id"/>
+		<!-- use link -->
+		<property name="icon" value="link"/>
+		<!-- <property name="link" value="/view.do?fid=f{funcUserView}&amp;id=p{id}"/> -->
+		<property name="link" value="javascript:dynamic.util.openPopup('/view.do?fid=f{funcUserViewPopup}&amp;id=p{userId}', 'userViewWindow', 500, 550)"/>
+		<property name="useXPath" value="false"/>
+		<property name="useContextPath" value="false"/>
+	</bean>	
+
+	<bean id="render.userconhospital.hospitalId.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="hospitalId"/>
+		<property name="renderDAO" ref="hospitalDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="name"/>
+		<property name="renderSearchField" value="id"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="id"/>
+		<!-- link -->
+		<property name="icon" value="link"/>
+		<property name="link" value="javascript:dynamic.util.openPopup('/view.do?fid=f{funcHospitalView}&amp;id=p{hospitalId}', 'hospitalViewWindow', 700, 800)"/>
+		<property name="useXPath" value="false"/>
+		<property name="useContextPath" value="false"/>
+	</bean>
+		
+	<bean id="render.userconhospital.status" class="dynamic.web.view.RenderRadio">
+		<property name="name" value="status"/>
+		<property name="mapPropertyName" value="kr.co.zadusoft.contents.model.UserConnectHospitalModel.status"/>
+	</bean>
+		
+	<bean id="render.userconhospital.requestDate" class="dynamic.web.view.RenderDate" parent="render.common.dateDefault">
+		<property name="name" value="requestDate"/>
+		<property name="dateFormat" value="yyyy-MM-dd"/>
+	</bean>	
+	<bean id="render.userconhospital.approvalDate" class="dynamic.web.view.RenderDate" parent="render.common.dateDefault">
+		<property name="name" value="approvalDate"/>
+		<property name="dateFormat" value="yyyy-MM-dd"/>
+	</bean>
+	
+	<bean id="render.user.approver.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="approver"/>
+		<property name="renderDAO" ref="userDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="name"/>
+		<property name="renderSearchField" value="account"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="account"/>
+	</bean>
+	
+	<!-- conditions -->
+	<bean id="condition.userconhospital.status.wait" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="status"/>
+		<property name="value" value="W"/>
+	</bean>
+	<bean id="condition.userconhospital.status.terminate" class="dynamic.ibatis.util.PlainSearchCondition">
+		<property name="name" value="status IN ('A', 'R')"/>
+	</bean>
+	<!-- validator -->
+	<bean id="validator.userconhospital.create" class="dynamic.web.view.ValidatorSimple" init-method="init" parent="valid.common.validDefault">
+		<property name="notnull" value="userId, hospitalId"/>
+	</bean>
+	<bean id="validator.userconhospital.create2" class="dynamic.web.view.ValidatorSimple" init-method="init" parent="valid.common.validDefault">
+		<property name="notnull" value="hospitalId"/>
+	</bean>
+	<bean id="validator.userconhospital.status" class="dynamic.web.view.ValidatorSimple" init-method="init" parent="valid.common.validDefault">
+		<property name="notnull" value="status"/>
+	</bean>
+	
+</beans>

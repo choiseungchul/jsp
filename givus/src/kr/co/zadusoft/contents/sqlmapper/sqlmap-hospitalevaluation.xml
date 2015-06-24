@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hospitalevaluation">
+	
+    <insert id="insert" parameterType="kr.co.zadusoft.contents.model.HospitalEvaluationModel">
+    	INSERT INTO HospitalEvaluation (
+        			id,
+        			hospitalId,
+        			point1,
+        			point2,
+        			point3,
+        			point4,
+        			point5,
+        			manCount,
+        			womanCount,
+        			generation10,
+        			generation20,
+        			generation30,
+        			generation40
+            	
+    	)VALUES(
+        			#{id},
+        			#{hospitalId},
+        			#{point1},
+        			#{point2},
+        			#{point3},
+        			#{point4},
+        			#{point5},
+        			#{manCount},
+        			#{womanCount},
+        			#{generation10},
+        			#{generation20},
+        			#{generation30},
+        			#{generation40}
+            
+    	)
+    	<selectKey keyProperty="id" resultType="java.lang.Integer">	
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>	
+    </insert>
+		
+	<update id="update" parameterType="kr.co.zadusoft.contents.model.HospitalEvaluationModel">
+		UPDATE HospitalEvaluation SET
+        			id = #{id},
+        			hospitalId = #{hospitalId},
+        			point1 = #{point1},
+        			point2 = #{point2},
+        			point3 = #{point3},
+        			point4 = #{point4},
+        			point5 = #{point5},
+        			manCount = #{manCount},
+        			womanCount = #{womanCount},
+        			generation10 = #{generation10},
+        			generation20 = #{generation20},
+        			generation30 = #{generation30},
+        			generation40 = #{generation40}
+        		WHERE
+		id = #{id}
+	</update>
+	
+	<update id="updateByCondition" parameterType="param">
+		UPDATE HospitalEvaluation SET
+	        ${fieldName} = #{fieldValue}
+	    <include refid="where_conditions"/>
+	</update>
+	
+	<delete id="delete" parameterType="java.lang.Integer">
+		DELETE FROM HospitalEvaluation WHERE id = #{id}
+	</delete>
+	
+	<delete id="deleteByCondition" parameterType="param">
+		DELETE FROM HospitalEvaluation
+		<include refid="where_conditions"/>
+	</delete>
+	
+	<select id="search" parameterType="param" resultType="kr.co.zadusoft.contents.model.HospitalEvaluationModel">
+		SELECT ${selectField} 
+		FROM HospitalEvaluation 
+		<include refid="where_conditions"/>
+		<if test="orderCondition != null">
+		ORDER BY ${orderCondition}
+		</if>
+		<if test="limitStart >= 0">
+		LIMIT #{limitStart}, #{limitSize}
+		</if>
+	</select>
+	
+	<select id="count" resultType="java.lang.Integer" parameterType="param">
+		SELECT COUNT(id)
+		FROM HospitalEvaluation
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="get" parameterType="java.lang.Integer" resultType="kr.co.zadusoft.contents.model.HospitalEvaluationModel">
+		SELECT * 
+		FROM HospitalEvaluation 
+		WHERE id = #{id}
+	</select>
+	
+	<select id="getNoCache" parameterType="java.lang.Integer" resultType="kr.co.zadusoft.contents.model.HospitalEvaluationModel">
+		SELECT * 
+		FROM HospitalEvaluation 
+		WHERE id = #{id}
+	</select>
+	
+	<select id="getNoCacheWithParam" parameterType="param" resultType="kr.co.zadusoft.contents.model.HospitalEvaluationModel">
+		SELECT * 
+		FROM HospitalEvaluation 
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="getByCondition" resultType="kr.co.zadusoft.contents.model.HospitalEvaluationModel" parameterType="param">
+		SELECT *
+		FROM HospitalEvaluation
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="getFieldByCondition" resultType="java.lang.Object" parameterType="param">
+		SELECT ${fieldName}
+		FROM HospitalEvaluation
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="exist" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT COUNT( id)
+		FROM HospitalEvaluation
+		WHERE id = #{id}
+	</select>
+	
+	<select id="existByCondition" resultType="java.lang.Integer" parameterType="param">
+		SELECT COUNT( id)
+		FROM HospitalEvaluation
+		<include refid="where_conditions"/>
+	</select>
+	
+	<sql id="where_conditions">
+		<if test="conditions != null">
+		<where>
+			<foreach collection="conditions" item="condition" open="(" separator="AND" close=")">
+				${condition.prefix} ${condition.name} ${condition.option} #{condition.value} ${condition.suffix}
+			</foreach>
+		</where>
+		</if>
+	</sql>
+</mapper>

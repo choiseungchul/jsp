@@ -1,0 +1,113 @@
+.thisweekranking-top-upperline {
+	color: #CCCCCC;
+}
+
+.thisweekranking-top {
+	border: 1px solid #DBDEE6;
+	background: #ECEFF8;
+	color: #D3D3D6;
+	font-size: 12px;
+	font-family: 나눔고딕 ExtraBold, Arial Unicode MS, sans-serif;
+	text-shadow: 1px 1px 1px #FAFAFD;
+}
+
+.thisweekranking-lefttab {
+	border: 1px solid #CCCCCC;
+	background: #FBFCFC;
+	color: #444444;
+	font-family: 나눔고딕, Arial Unicode MS, sans-serif;
+}
+.thisweekranking-lefttab-subtitles {
+	color: #777777;
+}
+
+.thisweekranking-lefttab-selected {
+	border: 1px solid #22628B;
+	background: #FFFFFF;
+	color: #005EA6;
+}
+
+.thisweekranking-rightdata {
+	color: #575757;
+	font-family: 나눔고딕, Arial Unicode MS, sans-serif;
+}
+.thisweekranking-rightdata-underline {
+	color: #E1E1E1;
+}
+
+.thisweekranking-arrow-up {
+	color: #B60000;
+}
+.thisweekranking-arrow-down {
+	color: #2E61A9;
+}
+
+.ranking-bot-searchbox {
+	border: 1px solid #E5E5E5;
+}
+
+
+.리스트 타이틀{
+color: #444444;
+}
+
+.순위3등까지 번호 전국{
+color: #005EA6;
+shadow: #A1A1A1;
+font-weight:bold;
+}
+
+.순위 3등까지 번호 서울{
+color: #B31515;
+shadow: #A1A1A1;
+font-weight:bold;
+}
+.순위 3등까지 번호 광역{
+color: #0D5C47;
+shadow: #A1A1A1;
+font-weight:bold;
+}
+.순위 3등까지 번호 부위{
+color: #;
+shadow: #A1A1A1;
+font-weight:bold;
+}
+
+.나머지 순위번호{
+color: #3F3F3F;
+}
+
+.병원명 순위 3등까지 전국{
+color: #005EA6;
+font-weight:bold;
+}
+
+.병원명 순위 3등까지 서울 {
+color: #B31515;
+font-weight:bold;
+}
+
+.병원명 순위 3등까지 -광역 {
+color: #0D5C47;
+font-weight:bold;
+}
+
+.병원명 순위 3등까지 -부위 {
+color: 9B491D;
+font-weight:bold;
+}
+
+.병원명 나머지 {
+color: #005EA6;
+}
+
+.등급{
+color: #D12F2F;
+}
+
+.총점 {
+color: #384A81;
+}
+.전문성 안정성 등등 {
+color: #444444;
+}

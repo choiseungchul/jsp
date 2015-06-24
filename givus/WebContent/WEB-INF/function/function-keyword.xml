@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	>
+	
+	<bean id="funcKeywordList" parent="funcDefault">
+		<property name="id" value="KA"/>
+		<property name="title" value="키워드 목록"/>
+		<property name="header" value="num:45, name:*, createDate:120"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.KeywordModel"/>
+		<property name="view" value="dynamic/web/table"/>
+		<property name="width" value="1000"/>
+<!-- 		<property name="sort" value="viewCount, createDate"/> -->
+		<property name="pageSize" value="20"/>
+		<property name="url" value="list.do"/>
+		<property name="dao" ref="keywordService"/>
+		<property name="role" value="systemManager"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.keyword.name"/>
+				<ref bean="render.common.createDate"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.keyword.create"/>
+			</list>
+		</property>
+	</bean>	
+
+	<bean id="funcKeywordCreate" parent="funcDefault">
+		<property name="id" value="KB"/>
+		<property name="title" value="키워드 등록"/>
+		<property name="header" value="name"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.KeywordModel"/>
+		<property name="view" value="dynamic/web/edit2"/>
+		<!--property name="hiddenField" value="boardId:#!{bid}"/-->
+		<property name="url" value="edit.do"/>
+		<property name="width" value="1000"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcKeywordList}"/>
+		<property name="dao" ref="keywordService"/>
+		<property name="role" value="systemManager"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+			</list>
+		</property>
+		<property name="validator" ref="validator.keyword.create"/>
+	</bean>	
+
+
+	<bean id="funcKeywordEdit" parent="funcKeywordCreate">
+		<property name="id" value="KC"/>
+		<property name="title" value="키워드 수정"/>
+		<property name="successView" value="redirect:!{xpath}"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+	</bean>
+	
+		
+	<bean id="funcKeywordView" parent="funcKeywordCreate">
+		<property name="id" value="KD"/>
+		<property name="title" value="키워드 보기"/>
+		<property name="view" value="dynamic/web/view"/>
+		<property name="url" value="view.do"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.keyword.modify"/>
+				<ref bean="button.common.list"/>
+			</list>
+		</property>
+	</bean>	
+	
+	<!-- renders -->
+	<bean id="render.keyword.name" class="dynamic.web.view.RenderText">
+		<property name="name" value="name"/>
+		<property name="link" value="/view.do?fid=f{funcKeywordView}&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+			
+	<!-- buttons -->
+	<bean id="button.keyword.create" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="키워드 등록"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="link" value="/edit.do?fid=f{funcKeywordCreate}&amp;action=create"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	<bean id="button.keyword.modify" class="dynamic.web.view.Button">
+		<property name="name" value="modify"/>
+		<property name="title" value="수정"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="role" value="owner"/>
+		<property name="link" value="/edit.do?fid=f{funcKeywordEdit}&amp;action=modify&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<!-- validator -->
+	<bean id="validator.keyword.create" class="dynamic.web.view.ValidatorSimple" init-method="init" parent="valid.common.validDefault">
+		<property name="notnull" value="name"/>
+	</bean>
+</beans>

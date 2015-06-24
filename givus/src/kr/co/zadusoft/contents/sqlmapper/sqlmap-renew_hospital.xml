@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renew_hospital">
+	
+	<!-- 병원조회 여부 확인 -->
+	<select id="get_hospital_view_cnt" resultType="java.lang.Integer" >
+		SELECT count(viewDate) as cnt FROM givus.UserHospitalView where userId = #{uid} and hospitalId = #{hid} and viewDate = #{viewDate} order by viewDate desc limit 0,1;
+	</select>
+	
+	<!-- 병원 조회수 1 올리기 -->
+	<update id="view_cnt_add" >
+		UPDATE givus.UserHospitalView SET viewDate = now(), viewCount = viewCount+1  WHERE hospitalId = #{hid} AND userId = #{uid};
+	</update>
+	
+	<!-- 병원정보조회 -->
+	<select id="get_hospital" resultType="java.util.HashMap">
+		SELECT * FROM Hospital 
+		WHERE id = #{hid};
+	</select>
+	<!-- 병원 썸네일 조회 -->
+	<select id="get_hospital_thumb" resultType="java.util.HashMap">
+		SELECT * FROM File  
+		WHERE relationId = #{hid} AND relationType = 'hospital';
+	</select>
+	<!-- 병원썸네일 5개 조회 -->
+	<select id="get_hospital_thumb5" resultType="java.util.HashMap">
+		SELECT * FROM File  
+		WHERE relationId = #{hid} AND relationType = 'hospital_gallery';
+	</select>
+	
+	<!-- 전문의 조회 -->
+	<select id="get_hospital_stat" resultType="java.util.HashMap">
+		SELECT * FROM HospitalStats WHERE hospitalId = #{hid};
+	</select>
+	
+	<!-- 병원 게시판 -->
+	<!-- 카테고리조회 -->
+	<select id="get_review_category" resultType="java.util.HashMap">
+		SELECT * FROM givus.PostingCategory where boardId = #{type} and isDelete = 'N'
+	</select>
+	<!-- 전체 조회 -->
+	<select id="get_review_board_all"  resultType="java.util.HashMap">
+		SELECT p.*, c.name as cname, u.account FROM givus.Posting as p
+		left join PostingCategory c
+		ON c.id = p.categoryId
+		left join User as u 		
+		ON u.account = p.creator
+		where p.boardId = #{type} AND
+		p.customField1 = #{hid}
+		and p.isDelete = 'N'
+		<if test="sex != null">
+		AND u.gender = #{sex}
+		</if>
+		<if test="cid != 0">
+		AND p.categoryId = #{cid}
+		</if>
+		ORDER BY ${order} DESC
+		limit #{start}, #{end};		
+	</select>
+	<!-- 전체카운트-->
+	<select id="get_review_board_all_cnt" resultType="java.lang.Integer">
+		SELECT count(*) as cnt FROM givus.Posting as p 		
+		left join PostingCategory as c
+		ON c.id = p.categoryId
+		left join User as u 		
+		ON u.account = p.creator
+		where p.boardId = #{type}
+		and p.isDelete = 'N'
+		<if test="sex != null">
+		AND u.gender = #{sex}
+		</if>
+		<if test="cid != 0">
+		AND categoryId = #{cid}
+		</if> 		
+		AND customField1 = #{hid};	
+	</select>
+	
+	<!-- 검색결과 -->
+	<select id="get_review_board_all_byQuery"  resultType="java.util.HashMap">
+		SELECT p.*, c.name as cname, u.account FROM givus.Posting as p
+		left join PostingCategory c
+		ON c.id = p.categoryId 
+		left join User as u 		
+		ON u.account = p.creator
+		where p.boardId = #{type} AND
+		customField1 = #{hid} and 
+		( p.subject LIKE CONCAT('%', #{query},'%')
+		OR p.contents LIKE CONCAT('%', #{query},'%'))
+		and p.isDelete = 'N'
+		<if test="sex != null">
+		AND u.gender = #{sex}
+		</if>
+		<if test="cid != 0">
+		and categoryId = #{cid}
+		</if>
+		ORDER BY ${order} DESC		
+		limit #{start}, #{end};	
+	</select>
+	<select id="get_review_board_all_byQuery_cnt"  resultType="java.lang.Integer">
+		SELECT count(*) as cnt FROM givus.Posting as p
+		left join PostingCategory c
+		ON c.id = p.categoryId
+		left join User as u 
+		ON u.account = p.creator 
+		where p.boardId = #{type} and
+		customField1 = #{hid} and 
+		( subject LIKE CONCAT('%', #{query}, '%')
+		OR contents LIKE CONCAT('%', #{query},'%') )
+		and p.isDelete = 'N'
+		<if test="sex != null">
+		AND u.gender = #{sex}
+		</if>
+		<if test="cid != 0">
+		and categoryId = #{cid}
+		</if>
+	</select>
+	
+	<!-- 글보기 -->
+	<select id="get_review_board_view" resultType="java.util.HashMap">
+		SELECT p.*, c.name as cname FROM givus.Posting as p 
+		left join PostingCategory c
+		ON c.id = p.categoryId
+		where p.id = #{bid};
+	</select>
+	
+	<!-- 글보기 + 포인트조회 -->
+	<select id="get_review_board_view_point" resultType="java.util.HashMap">
+		SELECT p.*, c.name as cname, rv.* FROM givus.Posting as p 
+		left join PostingCategory c
+		ON c.id = p.categoryId
+		left join ReviewPoints rv
+		ON p.id = rv.postingId
+		where p.id = #{bid};
+	</select>
+	
+	<!-- 이전글 -->
+	<select id="get_board_prev_id" resultType="java.util.HashMap">
+		SELECT id, subject, createDate, commentCount FROM givus.Posting
+		WHERE
+		customField1 = #{hid}
+		AND boardId = #{type}
+		and isDelete = 'N'
+		<if test="cid != 0">
+		AND categoryId = #{cid}
+		</if>
+		and isDelete = 'N'
+		AND createDate &lt; #{cdate} limit 0,1;
+	</select>
+	<!-- 다음글 -->
+	<select id="get_board_next_id" resultType="java.util.HashMap">
+		SELECT  id, subject, createDate, commentCount FROM givus.Posting 
+		WHERE 
+		customField1 = #{hid}
+		AND boardId = #{type}
+		and isDelete = 'N'
+		<if test="cid != 0">
+		AND categoryId = #{cid}
+		</if>
+		and isDelete = 'N'
+		AND createDate &gt; #{cdate} limit 0,1;
+	</select>
+	
+	<!-- 리뷰평점 -->
+	<select id="get_review_points" resultType="kr.co.zadusoft.contents.model.HospitalEvaluationModel">
+		SELECT id, hospitalId, 
+		sum(point1) as point1,
+		sum(point2) as point2,
+		sum(point3) as point3,
+		sum(point4) as point4,
+		sum(point5) as point5,
+		sum(manCount) as manCount,
+		sum(womanCount) as womanCount,
+		sum(generation10) as generation10,
+		sum(generation20) as generation20,
+		sum(generation30) as generation30,
+		sum(generation40) as generation40		 
+		FROM givus.HospitalEvaluation WHERE hospitalId = #{hid};
+	</select>
+	
+	<!-- 이병원을 본사람들이 많이 본 병원3개 -->
+	<select id="get_mostview_by_hospital" resultType="java.util.HashMap">
+		SELECT
+			H.*, SUM(UV1.viewCount) totalViewCount 
+		FROM
+			UserHospitalView UV1, UserHospitalView UV2, Hospital H
+		WHERE 
+			UV2.hospitalId = #{hid}
+			AND UV2.viewDate >= subdate( now(), INTERVAL 7 DAY)
+			AND UV1.userId = UV2.userId
+			AND UV1.viewDate >= subdate( now(), INTERVAL 7 DAY)
+			AND UV1.hospitalId = H.id
+		GROUP BY UV1.hospitalId 
+		ORDER BY totalViewCount DESC
+		LIMIT 0,3;
+	</select>
+
+	<!-- 병원 리뷰 점수 넣기 -->
+	<insert id="add_hospital_point" parameterType="java.util.HashMap">
+		 INSERT INTO ReviewPoints
+		 (
+			 postingId,
+			 gender,
+			 ageGroup,
+			 hospitalId,
+			 enoughDesc,
+			 considerNeeds,
+			 reaction,
+			 facilities,
+			 waitingTime,
+			 privacy,
+			 reliability,
+			 transportation,
+			 stress,
+			 afterSupport,
+			 amount,
+			 resultSatisfaction
+		 )
+		 VALUES
+		 (
+		 	#{pid},
+		 	#{gender},
+		 	#{age},
+		 	#{hid},
+		 	
+		 	#{point1},
+		 	#{point2},
+		 	#{point3},
+		 	#{point4},
+		 	#{point5},
+		 	#{point6},
+		 	#{point7},
+		 	#{point8},
+		 	#{point9},
+		 	#{point10},
+		 	#{point11},
+		 	#{point12}
+		 )
+		 <selectKey keyProperty="id" resultType="java.lang.Integer">	
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+	
+	<!-- 병원 리뷰 점수 넣기 -->
+	<update id="mod_hospital_point" parameterType="java.util.HashMap">
+		 UPDATE ReviewPoints SET
+		 gender = #{gender},
+		 ageGroup = #{age},
+		 hospitalId = #{hid},
+		 enoughDesc = #{point1},
+		 considerNeeds  = #{point2},
+		 reaction = #{point3},
+		 facilities = #{point4},
+		 waitingTime = #{point5},
+		 privacy = #{point6},
+		 reliability = #{point7},
+		 transportation = #{point8},
+		 stress = #{point9},
+		 afterSupport = #{point10},
+		 amount = #{point11},
+		 resultSatisfaction = #{point12}
+		 where postingId = #{pid}		 
+	</update>
+	
+	<!-- 병원리뷰 점수 합산 적용 -->	
+	<insert id="insert_points" parameterType="java.util.HashMap">
+		INSERT INTO HospitalEvaluation
+		(
+			hospitalId,
+			point1,
+			point2,
+			point3,
+			point4,
+			point5,
+			manCount,
+			womanCount,
+			generation10,
+			generation20,
+			generation30,
+			generation40
+		)
+		values
+		(
+			#{hid},
+			#{point1},
+			#{point2},
+			#{point3},
+			#{point4},
+			#{point5},
+			#{man},
+			#{woman},
+			#{g10},
+			#{g20},
+			#{g30},
+			#{g40}
+		);
+	</insert>
+
+
+	<!-- 병원이름 중복체크 -->
+	<select id="check_hos_name" resultType="java.lang.Integer">
+		select count(*) from Hospital
+		where name = #{name}
+	</select>
+	<!-- 병원 아이디 체크 -->
+	<select id="check_user_id" resultType="java.lang.Integer">
+		select count(*) from User
+		where account = #{account}
+	</select>	
+	<!-- 병원 이메일 체크 -->
+	<select id="check_user_email" resultType="java.lang.Integer">
+		select count(*) from User
+		where email = #{email}
+	</select>
+	
+	<!-- 병원 등록 -->
+	<insert id="add_hospital_new" parameterType="java.util.HashMap">
+    	INSERT INTO Hospital (
+        			name, createDate, creator, tel, address,
+        			introduction, specialistCount, anestheticCount, publishDate,
+        			homepage, patientRoom, recoveryRoom, interpreter, pickupService,
+        			mostOperation1, mostOperation2, viewCount, scale, counselCount,
+        			reviewPicCount, foreignerReg, possibleSurgery, hours, fax,
+        			address1, address2, business_id, postalCode, locationCode
+    	)VALUES(
+        			#{name}, now(), #{creator}, #{tel}, #{address}, 
+        			#{introduction}, #{specialistCount}, #{anestheticCount}, date_add(now(), interval +1 year),
+        			#{homepage}, #{patientRoom}, #{recoveryRoom}, #{interpreter}, #{pickupService},
+        			#{mostOperation1}, #{mostOperation2}, 0 ,#{scale},#{counselCount},
+        			#{reviewPicCount},#{foreignerReg},#{possibleSurgery},#{hours}, #{fax},
+        			#{address1}, #{address2}, #{business_id}, #{post}, #{location}
+    	)
+    	<selectKey keyProperty="id" resultType="java.lang.Integer">	
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>	
+    </insert>
+    
+	<insert id="add_hospital_user" parameterType="java.util.HashMap">
+		insert into User
+		( 
+			name, password, email, account, userStatus, 
+			userType, hospitalId, postalCode , is_fbuser,
+			birthday, gender
+		)
+		values
+		(
+			 #{account}, password(#{password}), #{email}, #{account}, 'A',
+		 	'H', #{hid}, #{post}, 'N',
+		 	#{birthday}, #{gender}
+		)
+		<selectKey keyProperty="id" resultType="java.lang.Integer">
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+	
+	<insert id="add_user_hospital_connect" parameterType="java.util.HashMap">
+		insert into UserConnectHospital
+		(
+			hospitalId, userId, requestDate, approver, status
+		)
+		values
+		(
+			#{hid}, #{uid}, now(), #{account}, 'W'
+		)
+	</insert>
+	
+	<insert id="add_hospital_status" parameterType="java.util.HashMap">
+		insert into HospitalStats
+		( 
+			hospitalId, 
+			oralDoctorCount, dentalDoctorCount, breastDoctorCount, orthodonticDoctorCount,
+			otolaryngologyDoctorCount, surgeryDoctorCount, plasticSurgeryDoctorCount, anestheticDoctorCount,
+			familyMedicineDoctorCount, generalDoctorCount, clinicalDoctorCount, obesityDoctorCount,
+			dermatologistDoctorCount, prostheticDoctorCount, implantsDoctorCount, obstetricsDoctorCount						 
+		)
+		values
+		(
+			#{hid},
+			#{hstat1}, #{hstat2}, #{hstat3}, #{hstat4},
+			#{hstat5}, #{hstat6}, #{hstat7}, #{hstat8}, 
+			#{hstat9}, #{hstat10}, #{hstat11}, #{hstat12}, 
+			#{hstat13}, #{hstat14}, #{hstat15}, #{hstat16}
+		)
+	</insert>
+	<update id="add_file_thumb" parameterType="java.util.HashMap">
+		update File set
+		relationType = 'hospital',
+		relationId = #{hid}
+		where id = #{id}
+	</update>
+	<update id="add_file_map" parameterType="java.util.HashMap">
+		update File set
+		relationType = 'hospital_gallery',
+		relationId = #{hid}
+		where id IN ( ${ids} );
+	</update>
+	
+	<!-- 사용자 타입변경 -->
+	<update id="change_user_type" parameterType="java.util.HashMap">
+		update User set
+		userType = #{type}, hospitalId = #{hid}
+		where id = #{uid}
+	</update>
+	
+	<!-- 지역코드 -->
+	<select id="get_location" resultType="java.util.HashMap">
+		select * from Code 
+		where category = 'L'
+		order by sort asc
+	</select>
+	
+	<!-- 부위코드 -->
+	<select id="get_parts" resultType="java.util.HashMap">
+		select * from Code 
+		where category = 'P'
+		order by sort asc
+	</select>
+	
+	<!-- 최근 업데이트 날짜로 변경 -->
+	<update id="set_update_recent" parameterType="java.lang.Integer">
+		update Hospital set
+		updateDate = now()
+		where id = #{hid}
+	</update>
+	
+
+</mapper>

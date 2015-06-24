@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user">
+
+    <select id="checkPassword" parameterType="kr.co.zadusoft.contents.model.UserModel" resultType="java.lang.Integer">
+    	SELECT COUNT(*) 
+    	FROM User
+    	WHERE 
+    		account = #{account} AND
+    		password = PASSWORD( #{password})
+	</select>
+	
+	<select id="checkAccount" parameterType="kr.co.zadusoft.contents.model.UserModel" resultType="java.lang.Integer">
+    	SELECT COUNT(*) 
+    	FROM User
+    	WHERE 
+			account = #{account}
+	</select>
+	
+	<select id="checkNickname" parameterType="kr.co.zadusoft.contents.model.UserModel" resultType="java.lang.Integer">
+    	SELECT COUNT(*) 
+    	FROM User
+    	WHERE 
+			nickname = #{nickname}
+	</select>
+	
+	<update id="updatePassword" parameterType="kr.co.zadusoft.contents.model.UserModel">
+		UPDATE User SET
+        			updateDate = #{updateDate},
+        			updator = #{updator},
+        			<!-- password = #{password}, -->
+        			password = password(#{password}),
+        			lastPasswordChangeDate = #{lastPasswordChangeDate}
+        		WHERE
+		id = #{id}
+	</update>
+</mapper>

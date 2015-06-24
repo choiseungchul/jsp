@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-autowire="byName"
+	>
+
+		<!-- ========================================= -->	
+		<!-- this file used by Dispatcher servlet -->
+		<!-- ========================================= -->
+											
+		<!-- ========================================= -->	
+		<!-- IMPORT -->
+		<!-- ========================================= -->
+<!-- 		<import resource="function/function.xml"/> -->
+<!-- 		<import resource="beans.xml"/> -->
+		
+		<!-- ========================================= -->	
+		<!-- MAPPING -->
+		<!-- ========================================= -->
+		<!-- no 'id' required, HandlerMapping beans are automatically detected by the DispatcherServlet --> 
+		<bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">  
+			<property name="order" value="1"/>			
+	        <property name="mappings">
+	            <value>
+					/func.do=functionController
+	                /list.do=listController
+	                /glist.do=givusListController
+	                /view.do=viewController
+	                /edit.do=editController
+	                /gedit.do=givusEditController
+	                /delete.do=deleteController
+	                /menu.do=menuController
+	                /sjax.do=ajaxController
+	                /login.do=loginController
+	                /logout.do=logoutController
+	                /portal.do=portalController
+	                /cal.do=calendarController
+	                /chart.do=chartController
+	                /excel.do=excelController
+	                /ajax.do=ajaxController
+<!-- 	                /upload.do=uploadController -->
+	            </value>
+	        </property>
+	    </bean>
+		
+		<bean id="exceptionMapping" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+			<property name="exceptionMappings">
+				<props>
+					<prop key="dynamic.web.dao.BizException">dynamic/web/error</prop>
+					<prop key="kr.co.zadusoft.givus.controller.GivusAuthorityException">givus/givus_error</prop>
+					<prop key="dynamic.web.controller.LoginException">givus/givus_error</prop>
+					<prop key="kr.co.zadusoft.givus.controller.GivusAuthorityPortletException">givus/givus_popup_error</prop>
+				</props>
+			</property>
+		</bean>
+		
+		<!-- ========================================= -->	
+		<!-- CONTROLLER -->
+		<!-- ========================================= -->		
+		<bean id="functionController" class="dynamic.web.controller.FunctionController">
+			<property name="viewPath" value="dynamic/web/pages"/>
+		</bean>
+
+<!-- 		<bean id="listController" class="dynamic.web.controller.ListController"> -->
+		<bean id="listController" class="kr.co.zadusoft.contents.controller.ContentsListController">
+			<property name="viewPath" value="dynamic/web/page"/>
+		</bean>
+		<bean id="givusListController" class="kr.co.zadusoft.givus.controller.GivusListController">
+			<property name="viewPath" value="givus/givus_page"/>
+		</bean>
+		
+		<bean id="calendarController" class="dynamic.web.controller.CalendarController">
+			<property name="viewPath" value="dynamic/web/page"/>
+		</bean>
+		
+		<bean id="chartController" class="dynamic.web.controller.ChartController">
+			<property name="viewPath" value="dynamic/web/chart"/>
+		</bean>
+		
+		<bean id="portalController" class="dynamic.web.controller.PortalController"/>
+		
+		<bean id="excelController" class="dynamic.web.controller.ExcelController"/>
+		
+		<bean id="deleteController" class="dynamic.web.controller.DeleteController"/>
+		
+		<bean id="viewController" class="kr.co.zadusoft.contents.controller.ContentsViewController"/>
+		
+		<bean id="editController" class="kr.co.zadusoft.givus.controller.GivusEditController">
+			<property name="formView" value="dynamic/web/page"/>
+		</bean>
+		
+		<bean id="givusEditController" class="kr.co.zadusoft.givus.controller.GivusEditController">
+			<property name="formView" value="givus/givus_page"/>
+		</bean>
+		
+		<bean id="menuController" class="dynamic.web.controller.MenuController"/>
+		
+		<bean id="ajaxController" class="dynamic.web.controller.AjaxController"/>
+		
+		<bean id="sjaxController" class="dynamic.web.controller.SjaxController"/>
+		
+		<bean id="loginController" class="kr.co.zadusoft.givus.controller.GivusLoginController">
+			<property name="loginSuccessPage" value="/index.jsp"/>
+			<property name="loginPagePath" value="/login.jsp"/>
+		</bean>
+		
+		<bean id="logoutController" class="dynamic.web.controller.LogoutController"/>
+		
+		<!--  GIVUS 리뉴얼 -->
+		
+		
+		<!-- ========================================= -->	
+		<!-- HANDLER -->
+		<!-- ========================================= -->
+		<bean id="filterHandler" class="dynamic.web.view.FilterHandler">
+		</bean>
+		
+		<bean id="headerHandler" class="dynamic.web.view.HeaderHandler">
+		</bean>
+		
+		<bean id="navigationHandler" class="dynamic.web.view.NavigationHandler">
+			<property name="prevImage" value="g_nav_prev"/>
+			<property name="nextImage" value="g_nav_next"/>
+		</bean>
+		
+		<bean id="roleHandler" class="kr.co.zadusoft.contents.util.GivusRoleHandler"/>
+		
+		<bean id="buttonHandler" class="dynamic.web.view.ButtonHandler"/>
+
+		<bean id="renderHandler" class="dynamic.web.view.RenderHandler"/>
+		
+		<bean id="imageHandler" class="dynamic.web.util.ImageHandler"/>
+		
+		<bean id="msgHandler" class="dynamic.web.util.MessageHandler"/>
+		
+		<bean id="descHandler" class="dynamic.web.view.DescHandler"/>
+		
+		<bean id="mapHandler" class="dynamic.web.util.MapHandler" init-method="init"/>
+
+		<bean id="menuHandler" class="dynamic.web.view.MenuHandler" init-method="init">
+			<property name="imageProperties" ref="imageProperties"/>
+		</bean>
+		
+		<bean id="configHandler" class="dynamic.web.util.ConfigHandler"/>
+		
+		<bean id="functionHandler" class="dynamic.web.func.FunctionHandler"/>
+
+
+		<bean id="excelHandler" class="dynamic.util.excel.ExcelHandler"/>
+		
+ 		<bean id="fileUploadHandler" class="kr.co.zadusoft.contents.util.FileUploadHandler">
+			<property name="repository" value="d:/givus_repository"/>
+ 		</bean>
+		
+		<!-- <bean id="fileUploadHandler" class="kr.co.zadusoft.contents.util.AWSS3FileUploadHandler"/> -->
+		
+		<bean id="accessManager" class="dynamic.web.util.AccessManager"/>
+		
+		<!-- ========================================= -->	
+		<!-- RESOURCE -->
+		<!-- ========================================= -->
+		<!-- Properties -->
+		<bean id="headerProperties" class="dynamic.web.util.InternalProperties" init-method="init">
+			<property name="location" value="/WEB-INF/config/header.properties"/>
+			<property name="fromCharset" value="8859_1"/>
+			<property name="toCharset" value="UTF-8"/>
+		</bean>
+		
+		<bean id="imageProperties" class="dynamic.web.util.InternalProperties" init-method="init">
+			<property name="location" value="/WEB-INF/config/image.properties"/>
+		</bean>
+		
+		<bean id="msgProperties" class="dynamic.web.util.InternalProperties" init-method="init">
+			<property name="location" value="/WEB-INF/config/msg.properties"/>
+			<property name="fromCharset" value="8859_1"/>
+			<property name="toCharset" value="UTF-8"/>
+		</bean>
+		
+		<bean id="mapProperties" class="dynamic.web.util.InternalProperties" init-method="init">
+			<property name="location" value="/WEB-INF/config/map.properties"/>
+			<property name="fromCharset" value="8859_1"/>
+			<property name="toCharset" value="UTF-8"/>
+		</bean>
+		
+		<bean id="configProperties" class="dynamic.web.util.InternalProperties" init-method="init">
+			<property name="location" value="/WEB-INF/config/server-config.properties"/>
+			<property name="fromCharset" value="8859_1"/>
+			<property name="toCharset" value="UTF-8"/>
+		</bean>
+		<!-- ========================================= -->	
+		<!-- ETC -->
+		<!-- ========================================= -->
+		<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+		    <property name="prefix" value="/WEB-INF/jsp/"/>
+		    <property name="suffix" value=".jsp"/>
+		</bean>
+		
+		<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		  	<!-- one of the properties available; the maximum file size in bytes -->
+		  	<!-- 10485760 == 10m -->
+		    <property name="maxUploadSize" value="10485760"/>
+		</bean>
+		
+		<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+			<property name="order" value="1"></property>
+		</bean>
+		
+		<bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"></bean>
+		
+</beans>

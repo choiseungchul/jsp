@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	>
+	
+	<bean id="funcPostingCategoryList" parent="funcDefault">
+		<property name="id" value="PCA"/>
+		<property name="title" value="카테고리 목록"/>
+		<property name="header" value="num:50, name:*:left, boardId, isDelete:30, modifyButton:40"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.PostingCategoryModel"/>
+		<property name="view" value="dynamic/web/table"/>
+		<property name="width" value="1000"/>
+<!-- 		<property name="sort" value="viewCount, createDate"/> -->
+		<property name="pageSize" value="20"/>
+		<property name="url" value="list.do"/>
+		<property name="dao" ref="postingCategoryService"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.postingCategory.name"/>
+				<ref bean="render.postingCategory.modifyButton"/>
+				<ref bean="render.common.createDate"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.postingCategory.create"/>
+			</list>
+		</property>
+	</bean> 
+	
+	<bean id="funcPostingCategoryCreate" parent="funcDefault">
+		<property name="id" value="PCB"/>
+		<property name="title" value="카테고리 등록"/>
+		<property name="header" value="name, boardId, isDelete"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.PostingCategoryModel"/>
+		<property name="view" value="dynamic/web/edit2"/>
+		<property name="url" value="edit.do"/>
+		<property name="width" value="1000"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcPostingCategoryList}"/>
+		<property name="dao" ref="postingCategoryService"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+			</list>
+		</property>
+		<property name="validator" ref="validator.postingCategory.create"/>
+	</bean>
+	
+	<bean id="funcPostingCategoryModify" parent="funcPostingCategoryCreate">
+		<property name="id" value="PCC"/>
+		<property name="title" value="카테고리 수정"/>
+	</bean>
+	
+	<!-- buttons -->
+	<bean id="button.postingCategory.create" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="카테고리 등록"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="link" value="/edit.do?fid=f{funcPostingCategoryCreate}&amp;action=create"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<!-- renders -->
+	<bean id="render.postingCategory.name" class="dynamic.web.view.RenderText">
+		<property name="name" value="name"/>
+		<property name="link" value="/list.do?fid=f{funcPostingList}&amp;bid=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="render.postingCategory.modifyButton" class="dynamic.web.view.RenderButton">
+		<property name="name" value="modifyButton"/>
+		<property name="icon" value="config"/>
+		<property name="link" value="/edit.do?fid=f{funcPostingCategoryModify}&amp;id=p{id}&amp;action=modify"/>
+		<property name="useContextPath" value="true"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="render.postingCategory.id.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="categoryId"/>
+		<property name="renderDAO" ref="postingCategoryDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="name"/>
+		<property name="renderSearchField" value="id"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="id"/>
+		<!-- link -->
+		<!-- <property name="icon" value="link"/>
+		<property name="link" value="javascript:sinshin.company.showCompanyInfoPopup('/view.do?fid=f{funcCompanyViewPopup}&amp;id=p{companyId}')"/>
+		<property name="useXPath" value="false"/>
+		<property name="useContextPath" value="false"/> -->
+	</bean>
+	
+	<!-- validator -->
+	<bean id="validator.postingCategory.create" class="dynamic.web.view.ValidatorSimple" init-method="init" parent="valid.common.validDefault">
+		<property name="notnull" value="name, boardId"/>
+	</bean>
+</beans>

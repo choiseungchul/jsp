@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renew_news">
+	
+	<!-- 뉴스 목록 (전체) -->
+	<select id="get_news_all" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT * FROM givus.Posting
+		where boardId = 19
+		<if test="query != ''">
+		AND ( subject LIKE CONCAT('%', #{query},'%')
+		OR contents LIKE CONCAT('%', #{query},'%') )  
+		</if>
+		order by ${sort} desc
+		limit #{start}, #{end}; 		
+	</select>
+	
+	<!-- 뉴스 카운트 (전체) -->
+	<select id="get_news_all_count" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT count(*) FROM givus.Posting
+		where boardId = 19
+		<if test="query != ''">
+		AND ( subject LIKE CONCAT('%', #{query},'%')
+		OR contents LIKE CONCAT('%', #{query},'%'))
+		</if>
+	</select>
+	
+	<!-- 뉴스 조회수 1 올리기 -->
+	<update id="view_cnt_add" parameterType="java.lang.Integer">
+		UPDATE Posting SET
+		viewCount = viewCount+1
+		WHERE id = #{id};
+	</update>
+	
+	<!-- 인기 뉴스 10개 -->
+	<select id="get_news_box" resultType="java.util.HashMap">
+		SELECT * FROM givus.Posting
+		where boardId = 19
+		AND createDate &gt; DATE_ADD(now(), interval -1 month)		
+		order by viewCount desc
+		limit 0, 10;
+	</select>
+	
+	<!-- 뉴스 보기 -->
+	<select id="get_news_view" resultType="java.util.HashMap">
+		SELECT * FROM Posting
+		and isDelete = 'N'
+		WHERE id = #{nid};
+	</select>
+
+</mapper>

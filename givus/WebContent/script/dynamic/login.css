@@ -1,0 +1,46 @@
+/* ========================================================
+   Dynamic Login 
+   ===================================================== */
+   
+.table-body{
+	
+	border:0; 
+	cellpadding:0;
+	cellspacing:0;
+}
+input, label {
+  font-family: 'Helvetica Neue', 맑은 고딕, Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 60;
+/*  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;*/
+  box-sizing: border-box;
+}
+
+input[type=text], input[type=password] {
+  padding: 0 10px;
+  width: 145px;
+  height: 17px;
+  color: #787878;
+  border: 1px solid #d2d2d2;
+  border-radius: 0px;
+
+}
+input[type=text]:focus, input[type=password]:focus {
+  color:  #505050;
+  outline: 0;
+}
+
+.lt-ie9 input[type=text], .lt-ie9 input[type=password] {
+  line-height: 20px;
+ 
+}
+
+.login-error{
+	font-family: 'Helvetica Neue', 맑은 고딕, Arial, sans-serif;
+	font-size: 11px;
+	margin-top: 20px;
+	color: #A0522D;
+	text-weight: bold;
+	text-align:center;
+}

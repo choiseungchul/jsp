@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	>
+
+	<bean id="funcHospitalList" parent="funcDefault">
+		<property name="id" value="HA"/>
+		<property name="title" value="병원 정보 목록"/>
+		<property name="header" value="num:50, locationCode:80, grade:80, name:200:left, homepage:200:left, tel:120, address:300:left, specialistCount:80, anestheticCount:80, annualOperationCount:80, totalPoint:80, establishDate:120, 
+			patientRoom:80, recoveryRoom:80, interpreter:80, pickupService:80, mostOperation1:80, mostOperation2:80, viewCount:80, scale:80, counselCount:80, reviewPicCount:80, foreignerReg:80, possibleSurgery:80, hours:200, fax:80"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.HospitalModel"/>
+		<property name="view" value="dynamic/web/table"/>
+<!-- 		<property name="sort" value="viewCount, createDate"/> -->
+		<property name="pageSize" value="20"/>
+		<property name="filter" value="name"/>
+		<property name="useStripe" value="true"/>
+		<property name="url" value="list.do"/>
+		<property name="sort" value="locationCode, specialistCount, anestheticCount, annualOperationCount, totalPoint"/>
+		<property name="dao" ref="hospitalService"/>
+		<property name="role" value="hospitalManager"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.hospital.name"/>
+				<ref bean="render.hospital.updateDate"/>
+				<ref bean="render.hospital.locationCode"/>
+				<ref bean="render.hospital.establishDate"/>
+				<ref bean="render.hospital.homepage"/>
+			</list>
+		</property>
+	</bean>	
+
+	<bean id="funcHospitalCreate" parent="funcDefault">
+		<property name="id" value="HB"/>
+		<property name="title" value="병원 정보 등록"/>
+		<property name="header" value="name, locationCode, establishDate, tel, fax, address, specialistCount, anestheticCount, annualOperationCount, recommendNote, patientRoom, recoveryRoom, interpreter, pickupService, mostOperation1, mostOperation2, viewCount, scale, counselCount, reviewPicCount, foreignerReg, possibleSurgery, hours, introduction"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.HospitalModel"/>
+		<property name="view" value="dynamic/web/edit2"/>
+		<!--property name="hiddenField" value="boardId:#!{bid}"/-->
+		<property name="url" value="edit.do"/>
+		<property name="width" value="1000"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcHospitalList}"/>
+		<property name="dao" ref="hospitalService"/>
+		<property name="role" value="hospitalManager"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.hospital.locationCode"/>
+				<ref bean="render.common.createDate"/>
+				<ref bean="render.hospital.establishDate"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+			</list>
+		</property>
+		<property name="validator" ref="validator.hospital.create"/>
+	</bean>
+
+	<bean id="funcHospitalEdit" parent="funcHospitalCreate">
+		<property name="id" value="HC"/>
+		<property name="title" value="병원 정보 수정"/>
+		<property name="successView" value="redirect:!{xpath}"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcHospitalView" parent="funcHospitalCreate">
+		<property name="id" value="HD"/>
+		<property name="title" value="병원 정보 보기"/>
+		<property name="header" value="name, locationCode, establishDate, tel, fax, address, specialistCount, anestheticCount, annualOperationCount, recommendNote, patientRoom, recoveryRoom, interpreter, pickupService, mostOperation1, mostOperation2, viewCount, scale, counselCount, reviewPicCount, foreignerReg, possibleSurgery, hours, introduction, createDate"/>
+		<property name="view" value="dynamic/web/view"/>
+		<property name="url" value="view.do"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.hospital.modify"/>
+				<ref bean="button.common.list"/>
+				<ref bean="button.hospital.operationprice.create"/>
+				<ref bean="button.hospital.gallery.create"/>
+			</list>
+		</property>
+	</bean>	
+	
+	<bean id="funcHospitalRankingList" parent="funcHospitalList">
+		<property name="id" value="HE"/>
+		<property name="title" value="병원 랭킹 목록"/>
+		<!-- <property name="header" value="num:50, locationCode:80, grade:80, name:*:left, homepage:200:left, tel:120, address:300:left, specialistCount:80, anestheticCount:80, annualOperationCount:80, totalPoint:80, establishDate:120"/> -->
+		<property name="header" value="num:50, locationCode:80, grade:80, name:*:left, homepage:200:left, tel:120, address:300:left, specialistCount:80, anestheticCount:80, annualOperationCount:80, totalPoint:80, establishDate:120, 
+			patientRoom:80, recoveryRoom:80, interpreter:80, pickupService:80, mostOperation1:80, mostOperation2:80, viewCount:80, scale:80, counselCount:80, reviewPicCount:80, foreignerReg:80, possibleSurgery, hours:200, fax:80, thumbFileId"/>
+		<property name="selectMethod" value="searchHospitalByRanking"/>
+		<property name="countMethod" value="countHospitalByRanking"/>
+		<property name="pageSize" value="10"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.hospital.name.forRanking"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcHospitalGalleryEdit" parent="funcHospitalCreate">
+		<property name="id" value="HF"/>
+		<property name="title" value="병원 사진 등록"/>
+		<property name="view" value="dynamic/web/edit_gallery"/>
+		<property name="url" value="edit.do"/>
+		<property name="cellWidth" value="460"/>
+		<property name="hiddenField" value="relationId:#!{id},relationType:hospital_gallery"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="funcHospitalPRGalleryEdit" parent="funcHospitalCreate">
+		<property name="id" value="HG"/>
+		<property name="title" value="우리병원 PR 상단 갤러리"/>
+		<property name="view" value="givus/admin/edit_gallery"/>
+		<property name="url" value="edit.do"/>
+		<property name="cellWidth" value="980"/>
+		<property name="hiddenField" value="relationType:hospitalpr_gallery"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="funcHospitalAjaxSearch" parent="funcDefault">
+		<property name="id" value="HH"/>
+		<property name="header" value="hospitalId"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.hospital.id.relation"/>
+			</list>
+		</property>
+	</bean>	
+	
+	<bean id="funcHospitalListOrderByViewCount" parent="funcHospitalList">
+		<property name="id" value="HI"/>
+		<property name="header" value="rnum:50, locationCode:80, grade:80, name:*:left, homepage:200:left, tel:120, address:300:left, specialistCount:80, anestheticCount:80, annualOperationCount:80, totalPoint:80, establishDate:120"/>
+		<property name="pageSize" value="3"/>
+		<property name="orderCondition" value="viewCount DESC"/>
+	</bean>
+	
+	<!-- renders -->
+	<bean id="render.hospital.name" class="dynamic.web.view.RenderText">
+		<property name="name" value="name"/>
+		<property name="link" value="/view.do?fid=f{funcHospitalView}&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="render.hospital.name.forRanking" class="dynamic.web.view.RenderText">
+		<property name="name" value="name"/>
+		<property name="link" value="/___/p/hospital/p{id}"/>
+		<property name="useXPath" value="false"/>
+		<property name="useContextPath" value="true"/>
+	</bean>
+	
+	<bean id="render.hospital.homepage" class="dynamic.web.view.RenderText">
+		<property name="name" value="homepage"/>
+		<property name="link" value="p{homepage}"/>
+		<property name="useXPath" value="false"/>
+		<property name="useContextPath" value="false"/>
+	</bean>
+	
+	<bean id="render.hospital.updateDate" class="dynamic.web.view.RenderDate" parent="render.common.dateDefault">
+		<property name="name" value="updateDate"/>
+		<property name="dateFormat" value="yyyy-MM-dd"/>
+	</bean>
+	
+	<bean id="render.hospital.establishDate" class="dynamic.web.view.RenderDate" parent="render.common.dateDefault">
+		<property name="name" value="establishDate"/>
+		<property name="dateFormat" value="yyyy-MM-dd"/>
+	</bean>
+	
+	<bean id="render.hospital.locationCode" class="kr.co.zadusoft.contents.view.RenderCode2">
+		<property name="name" value="locationCode"/>
+		<property name="category" value="L"/>
+		<property name="codeService" ref="codeService"/>
+	</bean>
+	
+	<bean id="render.hospital.id.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="hospitalId"/>
+		<property name="renderDAO" ref="hospitalDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="name"/>
+		<property name="renderSearchField" value="id"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="id"/>
+		<!-- link -->
+<!-- 		<property name="icon" value="link"/> -->
+<!-- 		<property name="link" value="javascript:sinshin.company.showCompanyInfoPopup('/view.do?fid=f{funcCompanyViewPopup}&amp;id=p{companyId}')"/> -->
+<!-- 		<property name="useXPath" value="false"/> -->
+<!-- 		<property name="useContextPath" value="false"/> -->
+	</bean>
+	
+	<!-- buttons -->
+	<bean id="button.hospital.create" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="병원 정보 등록"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="link" value="/edit.do?fid=f{funcHospitalCreate}&amp;action=create"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="button.hospital.operationprice.create" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="수술 가격 등록"/>
+		<property name="link" value="/edit.do?fid=f{funcOperationPriceEdit}&amp;action=create&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="button.hospital.gallery.create" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="병원 사진 등록"/>
+		<property name="link" value="/edit.do?fid=f{funcHospitalGalleryEdit}&amp;action=create&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="button.hospital.modify" class="dynamic.web.view.Button">
+		<property name="name" value="modify"/>
+		<property name="title" value="수정"/>
+		<property name="className" value="icon-pencil"/>
+<!-- 		<property name="role" value="owner"/> -->
+		<property name="link" value="/edit.do?fid=f{funcHospitalEdit}&amp;action=modify&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<!-- validator -->
+	<bean id="validator.hospital.create" class="dynamic.web.view.ValidatorSimple" init-method="init" parent="valid.common.validDefault">
+		<property name="notnull" value="name"/>
+	</bean>
+</beans>

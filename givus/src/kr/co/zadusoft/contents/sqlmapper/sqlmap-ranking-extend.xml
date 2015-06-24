@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ranking">
+	<select id="getRecentRanking" parameterType="java.util.Map" resultType="kr.co.zadusoft.contents.model.RankingModel">
+		SELECT 
+			*
+		FROM Ranking
+		WHERE 
+			id = ( 
+				SELECT MAX(id) FROM Ranking WHERE rankingType = #{rankingType}
+				<if test="rankingLocationCode != null">
+					AND rankingLocationCode = #{rankingLocationCode}
+				</if>
+				)
+	</select>
+	
+	<select id="getRecentRankingByPart" parameterType="java.util.Map" resultType="kr.co.zadusoft.contents.model.RankingModel">
+		SELECT 
+			*
+		FROM Ranking
+		WHERE 
+			id = ( 
+				SELECT MAX(id) FROM Ranking WHERE rankingType = #{rankingType}
+					AND rankingPartCode = #{rankingPartCode}
+				)
+	</select>
+</mapper>

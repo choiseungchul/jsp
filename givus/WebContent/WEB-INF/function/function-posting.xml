@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	>
+	
+	<bean id="funcPostingList" parent="funcDefault">
+		<property name="id" value="PA"/> 
+		<property name="title" value="글목록"/>
+		<property name="header" value="num:50, categoryId:80, subject:*:left:posting-subject, creator:100, createDate:100, viewCount:60, recommendCount:60"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.PostingModel"/>
+		<property name="view" value="dynamic/web/table"/>
+		<property name="filter" value="subject, categoryId"/>
+		<property name="sort" value="createDate, viewCount, recommendCount"/>
+<!-- 		<property name="sort" value="viewCount, createDate"/> -->
+		<property name="pageSize" value="20"/>
+		<property name="url" value="list.do"/>
+		<property name="selectField" value="id, categoryId, boardId, subject, creator, createDate, viewCount, recommendCount"/>
+		<property name="orderCondition" value="createDate DESC"/>
+		<property name="dao" ref="postingService"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.posting.create"/>
+			</list>
+		</property>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.category"/>
+				<ref bean="render.posting.subject"/>
+				<ref bean="render.posting.account"/>
+				<ref bean="render.common.createDate.2"/>
+				<ref bean="render.postingCategory.id.relation"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingCreate" parent="funcDefault">
+		<property name="id" value="PB"/>
+		<property name="title" value="글쓰기"/>
+		<property name="header" value="subject:::input-block-level, categoryId, contents"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.PostingModel"/>
+		<property name="view" value="dynamic/web/edit_posting"/>
+		<property name="hiddenField" value="boardId:#!{bid}"/>
+		<property name="url" value="edit.do"/>
+		<property name="width" value="1000"/>
+		<property name="successView" value="redirect:!{xpath}"/>
+		<property name="dao" ref="postingService"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+			</list>
+		</property>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.category"/>
+			</list>
+		</property>
+		<property name="validator" ref="validator.posting"/>
+		
+	</bean>
+	
+	<bean id="funcPostingModify" parent="funcPostingCreate">
+		<property name="id" value="PC"/>
+		<property name="title" value="수정하기"/>
+		<property name="successView" value="redirect:!{xpath}"/>
+		<property name="hiddenField"><null/></property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingView" parent="funcDefault">
+		<property name="id" value="PD"/>
+		<property name="title" value="내용보기"/>
+		<property name="header" value="subject, contents:::contents, categoryId, boardId, createDate, viewCount, commentCount, recommendCount"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.PostingModel"/>
+		<property name="view" value="dynamic/web/view_posting"/>
+		<property name="url" value="view.do"/>
+		<property name="width" value="1000"/>
+		<property name="dao" ref="postingService"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.view.createDate"/>
+				<ref bean="render.posting.account"/>
+				<ref bean="render.postingCategory.id.relation"/>
+				<ref bean="render.board.id.relation"/>
+				<ref bean="render.posting.view.viewCount"/>
+				<ref bean="render.posting.view.commentCount"/>
+				<ref bean="render.posting.view.recommendCount"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.posting.modify"/>
+				<ref bean="button.posting.delete"/>
+				<ref bean="button.common.list"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingDelete" parent="funcDefault">
+		<property name="id" value="PE"/>
+		<property name="title" value="삭제"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.PostingModel"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcPostingList}&amp;bid=p{boardId}"/>
+		<property name="url" value="delete.do"/>
+		<property name="dao" ref="postingService"/>
+	</bean>
+	
+	<bean id="funcPostingListBoardPage" parent="funcPostingList">
+		<property name="id" value="PF"/> 
+		<property name="header" value="num:76, subject:310:left:posting-subject, creator:110, recommendCount:80, viewCount:80, createDate:100, categoryId"/>
+		<property name="pageSize" value="15"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.category"/>
+				<ref bean="render.posting.subject.boardpage"/>
+				<ref bean="render.posting.account"/>
+				<ref bean="render.common.createDate.2"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingListHospitalEpiloguePage" parent="funcPostingList">
+		<property name="id" value="PG"/> 
+		<property name="header" value="num:76, subject:310:left:posting-subject, creator:110, recommendCount:80, viewCount:80, createDate:100, customField1, customField2"/>
+		<property name="selectField" value="id, categoryId, boardId, subject, contents, creator, createDate, viewCount, recommendCount, customField1, customField2"/>
+		<property name="pageSize" value="5"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.category"/>
+				<ref bean="render.posting.subject.nolink"/>
+				<ref bean="render.posting.contents.notags.200"/>
+				<ref bean="render.posting.account"/>
+				<ref bean="render.posting.view.createDate2"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingListPortlet" parent="funcPostingList">
+		<property name="id" value="PH"/> 
+<!-- 		<property name="selectField" value="id, categoryId, boardId, subject, contents, creator, createDate, viewCount, recommendCount"/> -->
+		<property name="pageSize" value="10"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.portlet.subject"/>
+<!-- 				<ref bean="render.posting.contents.notags.100"/> -->
+				<ref bean="render.posting.view.createDate2"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingListContents" parent="funcPostingList">
+		<property name="id" value="PI"/> 
+		<property name="selectField" value="id, categoryId, boardId, subject, contents, creator, createDate, viewCount, recommendCount"/>
+		<property name="pageSize" value="3"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.subject"/>
+				<ref bean="render.posting.contents.notags.250"/>
+				<ref bean="render.posting.view.createDate2"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingListSurgeryInfoPage" parent="funcPostingList">
+		<property name="id" value="PJ"/> 
+		<property name="header" value="subject:*:left:posting-subject, contents:340, customField1, createDate, categoryId"/>
+ 		<property name="selectField" value="id, categoryId, boardId, subject, contents, creator, createDate, viewCount, recommendCount, customField1"/> 
+		<property name="pageSize" value="5"/>
+		<property name="renders">
+			<list>
+				<!-- <ref bean="render.posting.subject"/> -->
+				<ref bean="render.posting.surgerynews.subject"/>
+				<ref bean="render.posting.contents.notags.80"/>
+				<ref bean="render.posting.view.createDate2"/>
+				<ref bean="render.postingCategory.id.relation"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingListSurgeryInfoPortletPage" parent="funcPostingList">
+		<property name="id" value="PJ1"/> 
+		<property name="header" value="num, subject:140:left:posting-subject"/>
+ 		<property name="selectField" value="id, categoryId, boardId, subject, contents, creator, createDate, viewCount, recommendCount, customField1"/> 
+		<property name="pageSize" value="8"/>
+		<property name="renders">
+			<list>
+				<!-- <ref bean="render.posting.subject"/> -->
+				<ref bean="render.posting.surgerynews.subject"/>
+				<ref bean="render.posting.contents.notags.40"/>
+				<ref bean="render.posting.view.createDate2"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingViewSurgeryInfoPage" parent="funcPostingView">
+		<property name="id" value="PK"/>
+		<property name="title" value="내용보기"/>
+		<property name="header" value="subject, contents:::contents, categoryId, boardId, customField1"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.PostingModel"/>
+		<property name="view" value="givus_surgery_news_detail"/>
+		<property name="url" value="view.do"/>
+		<property name="width" value="1000"/>
+		<property name="dao" ref="postingService"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.view.createDate"/>
+				<ref bean="render.postingCategory.id.relation"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingNoticeList" parent="funcPostingList">
+		<property name="id" value="PL"/>
+		<property name="title" value="공지사항"/>
+		<property name="header" value="num:76, subject:310:left:posting-subject, createDate:100, viewCount:80"/>
+		<property name="pageSize" value="15"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.category"/>
+				<ref bean="render.posting.subject.notice"/>
+				<ref bean="render.posting.account"/>
+				<ref bean="render.common.createDate.2"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="funcPostingListContents40" parent="funcPostingList">
+		<property name="id" value="PM"/> 
+		<property name="selectField" value="id, categoryId, boardId, subject, contents, creator, createDate, viewCount, recommendCount"/>
+		<property name="pageSize" value="3"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.subject.boardpage"/>
+				<ref bean="render.posting.contents.notags.40"/>
+				<ref bean="render.posting.view.createDate2"/>
+			</list>
+		</property>
+	</bean>
+
+	
+	<bean id="funcPostingListHospitalBoardPage" parent="funcPostingListBoardPage">
+		<property name="id" value="PN"/> 
+		<property name="header" value="num:76, subject:310:left:posting-subject, creator:110, recommendCount:80, viewCount:80, createDate:100, categoryId"/>
+		<property name="pageSize" value="15"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.category"/>
+				<ref bean="render.posting.subject.hboardpage"/>
+				<ref bean="render.posting.account"/>
+				<ref bean="render.common.createDate.2"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingCreateBoardPage" parent="funcPostingCreate">
+		<property name="id" value="PO"/>
+		<property name="title" value="글쓰기"/>
+		<property name="header" value="subject:::input-block-level, categoryId, contents, boardId"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.PostingModel"/>
+		<!-- <property name="view" value="dynamic/web/edit_posting"/> -->
+		<property name="view" value="givus/givus_posting_write"/>
+		<property name="hiddenField" value="boardId:#!{bid}"/>
+		<property name="url" value="edit.do"/>
+		<property name="width" value="760"/>
+		<!-- <property name="successView" value="redirect:!{xpath}"/>  -->
+		<property name="successView" value="redirect:/___/p/board/#!{bid}"/>
+		<property name="dao" ref="postingService"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.category"/>
+				<ref bean="render.board.id.relation"/>
+			</list>
+		</property>
+		<property name="validator" ref="validator.posting"/>
+		
+	</bean>
+	
+	<bean id="funcPostingCreateHospitalBoardPage" parent="funcPostingCreate">
+		<property name="id" value="PP"/>
+		<property name="title" value="글쓰기"/>
+		<property name="header" value="subject:::input-block-level, categoryId, contents, boardId"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.PostingModel"/>
+		<property name="view" value="givus/givus_posting_write"/>
+		<property name="hiddenField" value="boardId:#!{bid}"/>
+		<property name="url" value="gedit.do"/>
+		<property name="width" value="760"/>
+		<!-- <property name="successView" value="redirect:!{xpath}"/> -->
+		<property name="successView" value="redirect:/___/p/hboard/#!{bid}"/>
+		<property name="dao" ref="postingService"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.category"/>
+				<ref bean="render.board.id.relation"/>
+			</list>
+		</property>
+		<property name="validator" ref="validator.posting"/>
+	</bean>
+	
+	<bean id="funcPostingListHowToUseGivus" parent="funcPostingNoticeList">
+		<property name="id" value="PQ"/>
+		<property name="title" value="GIVUS 활용하기"/>
+		<property name="header" value="num:76, subject:310:left:posting-subject, createDate:100, viewCount:80"/>
+		<property name="pageSize" value="15"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.subject.howtousegivus"/>
+				<ref bean="render.posting.category"/>
+				<ref bean="render.posting.account"/>
+				<ref bean="render.common.createDate.2"/>
+			</list>
+		</property>
+	
+	</bean>
+	
+	<bean id="funcPostingViewHowToUseGivus" parent="funcPostingView">
+		<property name="id" value="PR"/>
+		<property name="title" value="GIVUS 활용하기"/>
+		<property name="view" value="givus/givus_posting_view"/>
+			
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.view.createDate"/>
+				<ref bean="render.posting.account"/>
+				<ref bean="render.postingCategory.id.relation"/>
+				<ref bean="render.board.id.contactus.relation"/>
+				<ref bean="render.posting.view.viewCount"/>
+				<ref bean="render.posting.view.commentCount"/>
+				<ref bean="render.posting.view.recommendCount"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingEditEpilogue" parent="funcPostingCreate">
+		<property name="id" value="PS"/>
+		<property name="title" value="병원후기작성"/>
+		<property name="header" value="subject:::input-block-level, categoryId, contents, customField1, boardId"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.PostingModel"/>
+		<property name="view" value="givus/givus_hospital_epilogue_write_popup"/>
+		<property name="hiddenField" value="boardId:#!{bid}"/>
+		<property name="url" value="gedit.do"/>
+		<property name="width" value="510"/>
+		
+		<property name="successView" value="redirect:/___/p/hepilogue/p{customField1}"/>
+		<property name="dao" ref="postingService"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.posting.category"/>
+				<ref bean="render.board.id.relation"/>
+			</list>
+		</property>
+		<property name="validator" ref="validator.posting"/>	
+	</bean>
+	
+	<bean id="funcPostingEditReview" parent="funcPostingEditEpilogue">
+		<property name="id" value="PT"/>
+		<property name="title" value="병원리뷰작성"/>
+		<property name="header" value="subject:::input-block-level, categoryId, contents, customField1, customField2, boardId, reviewPoints"/>
+		<property name="view" value="givus_hospital_review_write_popup"/>
+		<property name="successView" value="redirect:/___/p/hreview/p{customField1}"/>	
+	</bean>
+	
+	<bean id="funcPostingDetail" parent="funcPostingView">
+		<property name="id" value="PU"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.posting.detail.modify"/>
+				<ref bean="button.posting.detail.delete"/>
+				<ref bean="button.common.list"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingModifyBoardPage" parent="funcPostingModify">
+		<property name="id" value="PV"/>
+		<property name="title" value="글수정"/>
+		<property name="width" value="760"/>
+		<property name="successView" value="redirect:!{xpath}"/>
+		<!-- <property name="successView" value="redirect:/___/p/board/#!{bid}"/> -->
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingModifyEpilogue" parent="funcPostingModify">
+		<property name="id" value="PV2"/>
+		<property name="title" value="글수정"/>
+		<property name="width" value="700"/>
+		<property name="successView" value="redirect:!{xpath}"/>
+		<!-- <property name="successView" value="redirect:/___/p/board/#!{bid}"/> -->
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcPostingDeleteBoardPage" parent="funcPostingDelete">
+		<property name="id" value="PW"/>
+		<property name="title" value="삭제"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.PostingModel"/>
+		<property name="successView" value="redirect:!{xpath}"/>
+		<property name="url" value="delete.do"/>
+		<property name="dao" ref="postingService"/>
+	</bean>
+	
+	<bean id="funcPostingCreateInquiryPage" parent="funcPostingCreate">
+		<property name="id" value="PO1"/>
+		<property name="title" value="1:1 문의하기"/>
+		<!-- <property name="view" value="dynamic/web/edit_posting"/> -->
+		<property name="view" value="givus/givus_inquiry_create"/>
+		<property name="width" value="760"/>
+		<property name="successView" value="redirect:/___/p/inquiry/list"/>
+	</bean>
+	<!-- buttons -->
+	<bean id="button.posting.create" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="글쓰기"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="link" value="/edit.do?fid=f{funcPostingCreate}&amp;action=create&amp;bid=#!{bid}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="button.posting.modify" class="dynamic.web.view.Button">
+		<property name="name" value="modify"/>
+		<property name="title" value="수정"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="role" value="owner"/>
+		<property name="link" value="/edit.do?fid=f{funcPostingModify}&amp;action=modify&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="button.posting.delete" class="dynamic.web.view.Button">
+		<property name="name" value="delete"/>
+		<property name="title" value="삭제"/>
+		<property name="className" value="icon-trash"/>
+		<property name="role" value="owner"/>
+		<property name="link" value="/delete.do?fid=f{funcPostingDelete}&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="button.posting.detail.modify" class="dynamic.web.view.Button">
+		<property name="name" value="modify"/>
+		<property name="title" value="수정"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="role" value="owner"/>
+		<property name="link" value="/gedit.do?fid=f{funcPostingModifyBoardPage}&amp;action=modify&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="button.posting.detail.delete" class="dynamic.web.view.Button">
+		<property name="name" value="delete"/>
+		<property name="title" value="삭제"/>
+		<property name="className" value="icon-trash"/>
+		<property name="role" value="owner"/>
+		<property name="link" value="/delete.do?fid=f{funcPostingDeleteBoardPage}&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<!-- renders -->
+	
+	<bean id="render.posting.subject" class="kr.co.zadusoft.contents.view.RenderPostingSubject">
+		<property name="name" value="subject"/>
+		<property name="link" value="/view.do?fid=f{funcPostingView}&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+		<property name="boardService" ref="boardService"/>
+		<property name="configHandler" ref="configHandler"/>
+		<property name="imageHandler" ref="imageHandler"/>
+	</bean>
+	
+	<bean id="render.posting.subject.boardpage" class="kr.co.zadusoft.contents.view.RenderPostingSubject">
+		<property name="name" value="subject"/>
+		<!-- <property name="link" value="/view.do?fid=f{funcPostingView}&amp;id=p{id}"/> -->
+		<property name="link" value="/___/p/posting/detail/board/p{id}"/>
+		<property name="useXPath" value="true"/>
+		<property name="boardService" ref="boardService"/>
+		<property name="configHandler" ref="configHandler"/>
+		<property name="imageHandler" ref="imageHandler"/>
+	</bean>
+	
+	<bean id="render.posting.subject.hboardpage" class="kr.co.zadusoft.contents.view.RenderPostingSubject">
+		<property name="name" value="subject"/>
+		<!-- <property name="link" value="/view.do?fid=f{funcPostingView}&amp;id=p{id}"/> -->
+		<property name="link" value="/___/p/posting/detail/hboard/p{id}"/>
+		<property name="useXPath" value="true"/>
+		<property name="boardService" ref="boardService"/>
+		<property name="configHandler" ref="configHandler"/>
+		<property name="imageHandler" ref="imageHandler"/>
+	</bean>
+	
+	<bean id="render.posting.surgerynews.subject" class="kr.co.zadusoft.contents.view.RenderPostingSubject">
+		<property name="name" value="subject"/>
+		<property name="link" value="/___/p/surgeryinfo/detail/p{id}"/>
+		<property name="useXPath" value="true"/>
+		<property name="boardService" ref="boardService"/>
+		<property name="configHandler" ref="configHandler"/>
+		<property name="imageHandler" ref="imageHandler"/>
+	</bean>
+	
+	
+	<bean id="render.posting.portlet.subject" class="kr.co.zadusoft.contents.view.RenderPostingSubject">
+		<property name="name" value="subject"/>
+		<property name="link" value="javascript:loadInterviewDetail(p{id})"/>
+		<property name="useXPath" value="false"/>
+		<property name="boardService" ref="boardService"/>
+		<property name="configHandler" ref="configHandler"/>
+		<property name="imageHandler" ref="imageHandler"/>
+	</bean>
+	
+	<bean id="render.posting.subject.howtousegivus" class="kr.co.zadusoft.contents.view.RenderPostingSubject">
+		<property name="name" value="subject"/>
+		<property name="link" value="/___/p/posting/view/howToUseGivus/p{id}"/>
+		<property name="useXPath" value="true"/>
+		<property name="boardService" ref="boardService"/>
+		<property name="configHandler" ref="configHandler"/>
+		<property name="imageHandler" ref="imageHandler"/>
+	</bean>
+
+	<bean id="render.posting.subject.notice" class="kr.co.zadusoft.contents.view.RenderPostingSubject">
+		<property name="name" value="subject"/>
+		<property name="link" value="/___/p/posting/view/notice/p{id}"/>
+		<property name="useXPath" value="true"/>
+		<property name="boardService" ref="boardService"/>
+		<property name="configHandler" ref="configHandler"/>
+		<property name="imageHandler" ref="imageHandler"/>
+	</bean>
+		
+	<bean id="render.posting.contents.notags.40" class="kr.co.zadusoft.contents.view.RenderPostingContents">
+		<property name="name" value="contents"/>
+		<property name="removeTags" value="true"/>
+		<property name="hangulCutLength" value="40"/>
+	</bean>
+		
+	<bean id="render.posting.contents.notags.80" class="kr.co.zadusoft.contents.view.RenderPostingContents">
+		<property name="name" value="contents"/>
+		<property name="removeTags" value="true"/>
+		<property name="hangulCutLength" value="80"/>
+	</bean>
+	
+	<bean id="render.posting.contents.notags.200" class="kr.co.zadusoft.contents.view.RenderPostingContents">
+		<property name="name" value="contents"/>
+		<property name="removeTags" value="true"/>
+		<property name="hangulCutLength" value="200"/>
+	</bean>
+	
+	<bean id="render.posting.contents.notags.250" class="kr.co.zadusoft.contents.view.RenderPostingContents">
+		<property name="name" value="contents"/>
+		<property name="removeTags" value="true"/>
+		<property name="hangulCutLength" value="250"/>
+	</bean>
+	
+	<bean id="render.posting.subject.nolink" class="kr.co.zadusoft.contents.view.RenderPostingSubject">
+		<property name="name" value="subject"/>
+		<property name="useXPath" value="true"/>
+		<property name="boardService" ref="boardService"/>
+		<property name="configHandler" ref="configHandler"/>
+		<property name="imageHandler" ref="imageHandler"/>
+	</bean>
+	
+	<bean id="render.posting.account" class="kr.co.zadusoft.contents.view.RenderUserAccount">
+		<property name="name" value="creator"/>
+		<property name="userService" ref="userService"/>
+	</bean>
+	
+	<bean id="render.posting.category" class="kr.co.zadusoft.contents.view.RenderPostingCategory">
+		<property name="name" value="categoryId"/>
+		<property name="postingCategoryService" ref="postingCategoryService"/>
+	</bean>
+			
+	<bean id="render.postingCategory.id.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="categoryId"/>
+		<property name="renderDAO" ref="postingCategoryDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="name"/>
+		<property name="renderSearchField" value="id"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="id"/>
+		<!-- link -->
+		<!-- <property name="icon" value="link"/>
+		<property name="link" value="/___/p/surgeryinfo/p{boardId}/p{categoryId}')"/>
+		<property name="useXPath" value="false"/>
+		<property name="useContextPath" value="false"/> -->
+	</bean>
+	
+	<bean id="render.board.id.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="boardId"/>
+		<property name="renderDAO" ref="boardDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="name"/>
+		<property name="renderSearchField" value="id"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="id"/>
+		<!-- link -->
+		<property name="link" value="/___/p/board/p{boardId}/p{categoryId}"/>
+		<property name="useXPath" value="false"/>
+	</bean>
+	
+	<bean id="render.board.id.contactus.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="boardId"/>
+		<property name="renderDAO" ref="boardDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="name"/>
+		<property name="renderSearchField" value="id"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="id"/>
+		<!-- link -->
+		<!-- <property name="link" value="/___/p/"/>
+		<property name="useXPath" value="false"/> -->
+	</bean>
+	
+	<bean id="render.posting.view.createDate" class="dynamic.web.view.RenderDate" parent="render.common.dateDefault">
+		<property name="name" value="createDate"/>
+		<property name="dateFormat" value="yyyy-MM-dd (E) HH:mm"/>
+	</bean>
+	
+	<bean id="render.posting.view.createDate2" class="dynamic.web.view.RenderDate" parent="render.common.dateDefault">
+		<property name="name" value="createDate"/>
+		<property name="dateFormat" value="yyyy-MM-dd (E)"/>
+	</bean>
+	
+	<bean id="render.posting.view.createDate3" class="dynamic.web.view.RenderDate" parent="render.common.dateDefault">
+		<property name="name" value="createDate"/>
+		<property name="dateFormat" value="yyyy-MM-dd"/>
+	</bean>
+	
+	<bean id="render.posting.view.viewCount" class="dynamic.web.view.RenderNumber">
+		<property name="name" value="viewCount"/>
+		<property name="numberFormat" value="#,##0"/>
+	</bean>
+	
+	<bean id="render.posting.view.recommendCount" class="dynamic.web.view.RenderNumber">
+		<property name="name" value="recommendCount"/>
+		<property name="numberFormat" value="#,##0"/>
+	</bean>	
+	
+	<bean id="render.posting.view.commentCount" class="dynamic.web.view.RenderNumber">
+		<property name="name" value="recommendCount"/>
+		<property name="numberFormat" value="#,##0"/>
+	</bean>	
+		
+	<!-- validator -->
+	<bean id="validator.posting" class="dynamic.web.view.ValidatorSimple" init-method="init" parent="valid.common.validDefault">
+		<property name="notnull" value="subject,contents"/>
+	</bean>
+</beans>

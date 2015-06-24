@@ -1,0 +1,19 @@
+@CHARSET "UTF-8";
+.agreement{
+	margin: 30px auto 0;
+	width: 83%;
+}
+.agr_title{
+	font-size: 32px;
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+.agreement h3{
+	font-size: 27px;
+	margin-bottom: 10px;
+}
+.agreement pre{
+	line-height: 1.5;
+	width: auto;
+	margin-bottom: 20px;
+}

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	>
+	
+	<bean id="funcRankingDataList" parent="funcDefault">
+		<property name="id" value="RDA"/>
+		<property name="title" value="랭킹"/>
+		<property name="header" value="ranking:50, hospitalName:*:center, totalPoint:120, expertPoint:120, safePoint:120, satisfyPoint:120, sizePoint:120, convinientPoint:120"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.RankingDataModel"/>
+		<property name="view" value="dynamic/web/table"/>
+		<property name="pageSize" value="100"/>
+		<property name="url" value="list.do"/>
+		<property name="dao" ref="rankingDataService"/>
+		<property name="selectMethod" value="searchRankingDataByRanking"/>
+		<property name="countMethod" value="countRankingDataByRanking"/>
+		<property name="useNavigation" value="false"/>
+		<property name="useStripe" value="true"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.rankingdata.totalPoint"/>
+				<ref bean="render.rankingdata.expertPoint"/>
+				<ref bean="render.rankingdata.safePoint"/>
+				<ref bean="render.rankingdata.satisfyPoint"/>
+				<ref bean="render.rankingdata.sizePoint"/>
+				<ref bean="render.rankingdata.convinientPoint"/>
+			</list>
+		</property>
+		<property name="conditions">
+			<list>
+				<ref bean="condition.rankingData.rankingId"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="funcRankingDataPortletList" parent="funcRankingDataList">
+		<property name="id" value="RDB"/>
+		<property name="title" value="랭킹"/>
+		<property name="conditions"><null/></property>
+		<property name="pageSize" value="10"/>
+		<property name="useNavigation" value="true"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.rankingdata.hospitalName.forRanking"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcRankingDataPageList" parent="funcRankingDataList">
+		<property name="id" value="RDC"/>
+		<property name="title" value="랭킹"/>
+		<property name="header" value="ranking:50, hospitalName:*:center, grade:120, totalPoint:100, expertPoint:100, safePoint:100, satisfyPoint:100, sizePoint:100, convinientPoint:100"/>
+		<property name="conditions"><null/></property>
+		<property name="useNavigation" value="true"/>
+		<property name="pageSize" value="50"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.rankingdata.hospitalName.forRanking"/>
+				<ref bean="render.rankingdata.totalPoint"/>
+				<ref bean="render.rankingdata.expertPoint"/>
+				<ref bean="render.rankingdata.safePoint"/>
+				<ref bean="render.rankingdata.satisfyPoint"/>
+				<ref bean="render.rankingdata.sizePoint"/>
+				<ref bean="render.rankingdata.convinientPoint"/>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- render -->
+	<bean id="render.rankingdata.hospitalName.forRanking" class="dynamic.web.view.RenderText">
+		<property name="name" value="hospitalName"/>
+		<property name="link" value="/___/p/hospital/p{hospitalId}"/>
+		<property name="useXPath" value="false"/>
+		<property name="useContextPath" value="true"/>
+	</bean>
+	
+	<bean id="render.rankingdata.totalPoint" class="dynamic.web.view.RenderNumber">
+		<property name="name" value="totalPoint"/>
+		<property name="numberFormat" value="0.00"/>
+	</bean>
+	
+	<bean id="render.rankingdata.expertPoint" class="dynamic.web.view.RenderNumber">
+		<property name="name" value="expertPoint"/>
+		<property name="numberFormat" value="0.00"/>
+	</bean>
+	<bean id="render.rankingdata.safePoint" class="dynamic.web.view.RenderNumber">
+		<property name="name" value="safePoint"/>
+		<property name="numberFormat" value="0.00"/>
+	</bean>
+	<bean id="render.rankingdata.satisfyPoint" class="dynamic.web.view.RenderNumber">
+		<property name="name" value="satisfyPoint"/>
+		<property name="numberFormat" value="0.00"/>
+	</bean>
+	
+	<bean id="render.rankingdata.sizePoint" class="dynamic.web.view.RenderNumber">
+		<property name="name" value="sizePoint"/>
+		<property name="numberFormat" value="0.00"/>
+	</bean>
+	
+	<bean id="render.rankingdata.convinientPoint" class="dynamic.web.view.RenderNumber">
+		<property name="name" value="convinientPoint"/>
+		<property name="numberFormat" value="0.00"/>
+	</bean>
+	
+				
+	
+	
+	
+	<!-- conditions -->
+	<bean id="condition.rankingData.rankingId" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="rankingId"/>
+		<property name="value" value="#!{id}"/>
+	</bean>
+</beans>

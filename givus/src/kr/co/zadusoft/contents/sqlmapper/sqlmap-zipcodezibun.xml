@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zipcodezibun">
+	
+    <insert id="insert" parameterType="kr.co.zadusoft.contents.model.ZipcodeZibunModel">
+    	INSERT INTO ZipcodeZibun (
+        			postalCode,
+        			postalNo,
+        			city,
+        			siGunGu,
+        			eupMyunDong,
+        			ri,
+        			doSeo,
+        			san,
+        			zibunStartNo,
+        			zibunStartSubNo,
+        			zibunEndNo,
+        			zibunEndSubNo,
+        			buildingName,
+        			dongRangeStart,
+        			dongRangeEnd,
+        			fullAddress
+            	
+    	)VALUES(
+        			#{postalCode},
+        			#{postalNo},
+        			#{city},
+        			#{siGunGu},
+        			#{eupMyunDong},
+        			#{ri},
+        			#{doSeo},
+        			#{san},
+        			#{zibunStartNo},
+        			#{zibunStartSubNo},
+        			#{zibunEndNo},
+        			#{zibunEndSubNo},
+        			#{buildingName},
+        			#{dongRangeStart},
+        			#{dongRangeEnd},
+        			#{fullAddress}
+            
+    	)
+    	<selectKey keyProperty="id" resultType="java.lang.Integer">	
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>	
+    </insert>
+		
+	<update id="update" parameterType="kr.co.zadusoft.contents.model.ZipcodeZibunModel">
+		UPDATE ZipcodeZibun SET
+        			postalCode = #{postalCode},
+        			postalNo = #{postalNo},
+        			city = #{city},
+        			siGunGu = #{siGunGu},
+        			eupMyunDong = #{eupMyunDong},
+        			ri = #{ri},
+        			doSeo = #{doSeo},
+        			san = #{san},
+        			zibunStartNo = #{zibunStartNo},
+        			zibunStartSubNo = #{zibunStartSubNo},
+        			zibunEndNo = #{zibunEndNo},
+        			zibunEndSubNo = #{zibunEndSubNo},
+        			buildingName = #{buildingName},
+        			dongRangeStart = #{dongRangeStart},
+        			dongRangeEnd = #{dongRangeEnd},
+        			fullAddress = #{fullAddress}
+        		WHERE
+		id = #{id}
+	</update>
+	
+	<update id="updateByCondition" parameterType="param">
+		UPDATE ZipcodeZibun SET
+	        ${fieldName} = #{fieldValue}
+	    <include refid="where_conditions"/>
+	</update>
+	
+	<delete id="delete" parameterType="java.lang.Integer">
+		DELETE FROM ZipcodeZibun WHERE id = #{id}
+	</delete>
+	
+	<delete id="deleteByCondition" parameterType="param">
+		DELETE FROM ZipcodeZibun
+		<include refid="where_conditions"/>
+	</delete>
+	
+	<select id="search" parameterType="param" resultType="kr.co.zadusoft.contents.model.ZipcodeZibunModel">
+		SELECT ${selectField} 
+		FROM ZipcodeZibun 
+		<include refid="where_conditions"/>
+		<if test="orderCondition != null">
+		ORDER BY ${orderCondition}
+		</if>
+		<if test="limitStart >= 0">
+		LIMIT #{limitStart}, #{limitSize}
+		</if>
+	</select>
+	
+	<select id="count" resultType="java.lang.Integer" parameterType="param">
+		SELECT COUNT(id)
+		FROM ZipcodeZibun
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="get" parameterType="java.lang.Integer" resultType="kr.co.zadusoft.contents.model.ZipcodeZibunModel">
+		SELECT * 
+		FROM ZipcodeZibun 
+		WHERE id = #{id}
+	</select>
+	
+	<select id="getNoCache" parameterType="java.lang.Integer" resultType="kr.co.zadusoft.contents.model.ZipcodeZibunModel">
+		SELECT * 
+		FROM ZipcodeZibun 
+		WHERE id = #{id}
+	</select>
+	
+	<select id="getNoCacheWithParam" parameterType="param" resultType="kr.co.zadusoft.contents.model.ZipcodeZibunModel">
+		SELECT * 
+		FROM ZipcodeZibun 
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="getByCondition" resultType="kr.co.zadusoft.contents.model.ZipcodeZibunModel" parameterType="param">
+		SELECT *
+		FROM ZipcodeZibun
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="getFieldByCondition" resultType="java.lang.Object" parameterType="param">
+		SELECT ${fieldName}
+		FROM ZipcodeZibun
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="exist" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT COUNT( id)
+		FROM ZipcodeZibun
+		WHERE id = #{id}
+	</select>
+	
+	<select id="existByCondition" resultType="java.lang.Integer" parameterType="param">
+		SELECT COUNT( id)
+		FROM ZipcodeZibun
+		<include refid="where_conditions"/>
+	</select>
+	
+	<sql id="where_conditions">
+		<if test="conditions != null">
+		<where>
+			<foreach collection="conditions" item="condition" open="(" separator="AND" close=")">
+				${condition.prefix} ${condition.name} ${condition.option} #{condition.value} ${condition.suffix}
+			</foreach>
+		</where>
+		</if>
+	</sql>
+</mapper>

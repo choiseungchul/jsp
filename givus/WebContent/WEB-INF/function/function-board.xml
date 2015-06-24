@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	>
+	
+	<bean id="funcBoardList" parent="funcDefault">
+		<property name="id" value="BA"/>
+		<property name="title" value="게시판 목록"/>
+		<property name="header" value="num:50, boardType:100, name:*:left, useComment:100, useRecommend:100, useAttachmentFile:100, creator:120, createDate:120, modifyButton:60"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.BoardModel"/>
+		<property name="view" value="dynamic/web/table"/>
+		<property name="filter" value="name"/>
+<!-- 		<property name="sort" value="viewCount, createDate"/> -->
+		<property name="pageSize" value="20"/>
+		<property name="useStripe" value="true"/>
+		<property name="url" value="list.do"/>
+		<property name="dao" ref="boardService"/>
+		<property name="role" value="contentsManager"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.board.name"/>
+				<ref bean="render.board.boardType"/>
+				<ref bean="render.board.useComment"/>
+				<ref bean="render.board.useAttachmentFile"/>
+				<ref bean="render.board.modifyButton"/>
+				<ref bean="render.board.useRecommend"/>
+				<ref bean="render.common.createDate"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.board.create"/>
+			</list>
+		</property>
+	</bean> 
+	
+	<bean id="funcBoardCreate" parent="funcDefault">
+		<property name="id" value="BB"/>
+		<property name="title" value="게시판 등록"/>
+		<property name="header" value="name, boardType, usePostingCategory, useComment, useRecommend, useAttachmentFile, attachmentFileSize, attachmentFileCount, description"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.BoardModel"/>
+		<property name="view" value="dynamic/web/edit2"/>
+		<property name="url" value="edit.do"/>
+		<property name="width" value="1000"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcBoardList}"/>
+		<property name="dao" ref="boardService"/>
+		<property name="footerPage" value="dynamic/web/board_footer"/>
+		<property name="hiddenField" value="postingCategory:p{postingCategory}"/>
+		<property name="role" value="contentsManager"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+			</list>
+		</property>
+		<property name="renders">
+			<list>
+				<ref bean="render.board.boardType"/>
+				<ref bean="render.board.usePostingCategory"/>
+				<ref bean="render.board.useComment"/>
+				<ref bean="render.board.useRecommend"/>
+				<ref bean="render.board.useAttachmentFile"/>
+			</list>
+		</property>
+		<property name="validator" ref="validator.baord.create"/>
+	</bean>
+	
+	<bean id="funcBoardModify" parent="funcBoardCreate">
+		<property name="id" value="BC"/>
+		<property name="title" value="게시판 수정"/>
+	</bean>
+	
+	<!-- buttons -->
+	<bean id="button.board.create" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="게시판 등록"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="link" value="/edit.do?fid=f{funcBoardCreate}&amp;action=create"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<!-- renders -->
+	<bean id="render.board.useComment" class="dynamic.web.view.RenderRadio">
+		<property name="name" value="useComment"/>
+		<property name="mapPropertyName" value="common.yesno"/>
+	</bean>
+	<bean id="render.board.useRecommend" class="dynamic.web.view.RenderRadio">
+		<property name="name" value="useRecommend"/>
+		<property name="mapPropertyName" value="common.yesno"/>
+	</bean>
+	<bean id="render.board.usePostingCategory" class="dynamic.web.view.RenderRadio">
+		<property name="name" value="usePostingCategory"/>
+		<property name="mapPropertyName" value="common.yesno"/>
+	</bean>
+	<bean id="render.board.useAttachmentFile" class="dynamic.web.view.RenderRadio">
+		<property name="name" value="useAttachmentFile"/>
+		<property name="mapPropertyName" value="common.yesno"/>
+	</bean>
+	<bean id="render.board.boardType" class="dynamic.web.view.RenderCombo">
+		<property name="name" value="boardType"/>
+		<property name="mapPropertyName" value="board.type"/>
+	</bean>
+	
+	<bean id="render.board.name" class="dynamic.web.view.RenderText">
+		<property name="name" value="name"/>
+		<property name="link" value="/list.do?fid=f{funcPostingList}&amp;bid=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="render.board.modifyButton" class="dynamic.web.view.RenderButton">
+		<property name="name" value="modifyButton"/>
+		<property name="icon" value="config"/>
+		<property name="link" value="/edit.do?fid=f{funcBoardModify}&amp;id=p{id}&amp;action=modify"/>
+		<property name="useContextPath" value="true"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="render.board.boardId.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="boardId"/>
+		<property name="renderDAO" ref="boardDAO"/>
+		<!-- use rendering -->
+		<property name="renderSelectField" value="name"/>
+		<property name="renderSearchField" value="id"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="id"/>
+	</bean>
+	
+	<!-- validator -->
+	<bean id="validator.baord.create" class="dynamic.web.view.ValidatorSimple" init-method="init" parent="valid.common.validDefault">
+		<property name="notnull" value="name"/>
+	</bean>
+</beans>

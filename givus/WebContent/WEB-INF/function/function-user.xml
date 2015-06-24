@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+	>
+	<bean id="funcUserList" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="UA"/>
+		<property name="title" value="전체 사용자 목록"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.UserModel"/>
+		<property name="dao" ref="userService"/>
+		<!-- header value must consist of model's properties [property name]:[column width]:[align]	-->
+<!-- 		<property name="header" value="fileId:50, account:100, name:100, position:80, title:80, officePhone:80, mobile:120, email:*"/> -->
+		<property name="header" value="num:45, userType:100, gender:50, name:*, account:120, userStatus:50, email:150, loginCount:80, lastLoginDate:100, isSubscribe:60"/>
+		<property name="view" value="dynamic/web/table"/>
+		<property name="url" value="list.do"/>
+		<property name="pageSize" value="20"/>
+		<property name="useNavigation" value="true"/>
+		<property name="role" value="systemManager"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.user.create"/>
+			</list>
+		</property>
+		<property name="renders">
+			<list>
+				<ref bean="render.user.name"/>
+				<ref bean="render.user.account"/>
+				<ref bean="render.user.gender"/>
+				<ref bean="render.user.isSubscribe"/>
+				<ref bean="render.user.userType"/>
+				<ref bean="render.user.userStatus"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="funcGeneralUserList" class="dynamic.web.func.Function" parent="funcUserList">
+		<property name="id" value="UB"/>
+		<property name="title" value="일반 사용자 목록"/>
+		<property name="conditions">
+			<list>
+				<ref bean="condition.user.usertype.generaluser"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.user.create.generaluser"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="funcHospitalUserList" class="dynamic.web.func.Function" parent="funcUserList">
+		<property name="id" value="UC"/>
+		<property name="title" value="병원 사용자 목록"/>
+		<property name="conditions">
+			<list>
+				<ref bean="condition.user.usertype.hospitaluser"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.user.create.hospitaluser"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcUserCreate" parent="funcDefault">
+		<property name="id" value="UD"/>
+		<property name="title" value="사용자 등록"/>
+		<property name="header" value="name, gender, nickname, registrationNo, account, password, email, isSubscribe, birthday, tel, mobile,  address"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.UserModel"/>
+		<property name="view" value="dynamic/web/edit2"/>
+		<!--property name="hiddenField" value="boardId:#!{bid}"/-->
+		<property name="url" value="edit.do"/>
+		<property name="width" value="1000"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcUserList}"/>
+		<property name="dao" ref="userService"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+				<ref bean="button.user.create"/>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+		<property name="renders">
+			<list>
+				<ref bean="render.user.gender"/>
+				<ref bean="render.user.isSubscribe"/>
+				<ref bean="render.user.birthday"/>
+			</list>
+		</property>
+		<property name="validator" ref="validator.user.create"/>
+	</bean>
+
+	<bean id="funcUserCreateGeneralUser" parent="funcUserCreate">
+		<property name="id" value="UE"/>
+		<property name="title" value="일반 사용자 등록"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcGeneralUserList}"/>
+		<property name="hiddenField" value="userType:G"/>
+	</bean>
+	
+	<bean id="funcUserCreateHospitalUser" parent="funcUserCreate">
+		<property name="id" value="UF"/>
+		<property name="title" value="병원 사용자 등록"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcHospitalUserList}"/>
+		<property name="hiddenField" value="userType:H"/>
+		<property name="validator" ref="validator.user.create.huser"/>
+	</bean>
+	
+	<bean id="funcUserCreateGeneralUserSelf" parent="funcUserCreateGeneralUser">
+		<property name="id" value="UG"/>
+		<property name="title" value="일반 사용자 가입"/>
+		<property name="header" value="name, gender, nickname, account, password, email, isSubscribe, birthday, tel, mobile, address"/>
+		<property name="view" value="givus_join_user"/>
+		<property name="successView" value="redirect:/index.jsp"/>
+		<property name="hiddenField" value="userType:G"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.user.create"/>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="funcUserCreateHospitalUserSelf" parent="funcUserCreate">
+		<property name="id" value="UH"/>
+		<property name="title" value="병원 사용자 가입"/>
+		<property name="header" value="nickname::::병원명, gender, registrationNo, account, password, email, isSubscribe, tel, mobile, address"/>
+		<property name="view" value="givus_join_user"/>
+		<property name="successView" value="redirect:/index.jsp"/>
+		<property name="hiddenField" value="userType:H"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.user.create"/>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+		<property name="validator" ref="validator.user.create.huser"/>
+	</bean>
+	
+	<bean id="funcUserView" class="dynamic.web.func.Function" parent="funcUserCreate">
+		<property name="id" value="UI"/>
+		<property name="title" value="사용자 정보 조회"/>
+		<property name="dao" ref="userService"/>
+		<!-- header value must consist of model's properties [property name]:[column width]:[align]	-->
+		<property name="header" value="name, gender, userStatus, userType, nickname, account, email, isSubscribe, birthday, tel, mobile,  address, registrationNo"/>
+		<!-- view property used by viewResolver -->
+		<property name="view" value="dynamic/web/view"/>
+		<property name="url" value="view.do"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.user.gender"/>
+				<ref bean="render.user.userType"/>
+				<ref bean="render.user.userStatus"/>
+				<ref bean="render.user.isSubscribe"/>
+				<ref bean="render.user.birthday"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+				<ref bean="button.user.modify"/>
+ 				<!-- <ref bean="button.user.lock"/> -->
+				<!-- <ref bean="button.user.delete"/> -->
+		<!-- 		<ref bean="button.user.disuse"/> -->
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="funcUserModify" class="dynamic.web.func.Function" parent="funcUserView">
+		<property name="id" value="UJ"/>
+		<property name="title" value="사용자 정보 수정"/>
+		<property name="dao" ref="userService"/>
+		<!-- header value must consist of model's properties [property name]:[column width]:[align]	-->
+		<property name="header" value="name, gender, userStatus, userType, email, isSubscribe, birthday, tel, mobile,  address"/>
+		<!-- view property used by viewResolver -->
+		<property name="view" value="dynamic/web/edit"/>
+		<!-- <property name="getMethod" value="getByAccountForModify"/> -->
+		<property name="url" value="edit.do"/>
+		<property name="successView" value="redirect:!{service}"/>
+		<property name="validator" ref="validator.user"/>
+		<property name="messageKey" value="user_edit"/>
+		<property name="buttons"><null/>
+		
+		</property>
+		<property name="renders">
+			<list>
+				<ref bean="render.user.gender"/>
+				<ref bean="render.user.userType"/>
+				<ref bean="render.user.userStatus"/>
+				<ref bean="render.user.isSubscribe"/>
+				<ref bean="render.user.birthday"/>
+			</list>
+		</property>
+	</bean>
+		
+	<bean id="funcUserDisUse" class="dynamic.web.func.Function" parent="funcUserCreate">
+		<property name="id" value="UK"/>
+		<property name="title" value="사용자 영구 삭제"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcUserList}"/>
+	</bean>
+	<bean id="funcUserDelete" class="dynamic.web.func.Function" parent="funcUserCreate">
+		<property name="id" value="UL"/>
+		<property name="title" value="사용자 삭제"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcUserList}"/>
+	</bean>
+	<bean id="funcUserLock" class="dynamic.web.func.Function" parent="funcUserCreate">
+		<property name="id" value="UM"/>
+		<property name="title" value="사용자 잠금"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcUserList}"/>
+	</bean>
+	<bean id="funcUserActivate" class="dynamic.web.func.Function" parent="funcUserCreate">
+		<property name="id" value="UN"/>
+		<property name="title" value="사용자 상태 활성"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcUserList}"/>
+	</bean>	
+	
+	<bean id="funcUserModifyGeneralUser" class="dynamic.web.func.Function" parent="funcUserModify">
+		<property name="id" value="UO"/>
+		<property name="title" value="개인정보수정"/>
+		<!-- header value must consist of model's properties [property name]:[column width]:[align]	-->
+		<property name="header" value="name, gender, nickname, account, email, isSubscribe, birthday, tel, mobile,  address"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.user.gender"/>
+				<ref bean="render.user.userStatus"/>
+				<ref bean="render.user.isSubscribe"/>
+				<ref bean="render.user.birthday"/>
+			</list>
+		</property>
+		<property name="hiddenField" value="pageType:m"/>
+		<property name="view" value="givus_user_info_edit"/>
+		<property name="successView" value="redirect:/___/p/user/modify/m"/>
+		<property name="validator" ref="validator.user.create"/>
+	</bean>
+	
+	<bean id="funcUserModifyHospitalUser" class="dynamic.web.func.Function" parent="funcUserModify">
+		<property name="id" value="UP"/>
+		<property name="title" value="병원사용자 정보수정"/>
+		<!-- header value must consist of model's properties [property name]:[column width]:[align]	-->
+		<property name="header" value="nickname::::병원명, registrationNo, account, email, isSubscribe, tel, address"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.user.gender"/>
+				<ref bean="render.user.userStatus"/>
+				<ref bean="render.user.isSubscribe"/>
+				<ref bean="render.user.birthday"/>
+			</list>
+		</property>
+		<property name="hiddenField" value="pageType:h"/>
+		<property name="view" value="givus_user_info_edit"/>
+		<property name="successView" value="redirect:/___/p/user/modify/h"/>
+		<property name="validator" ref="validator.user.create.huser"/>
+	</bean>
+	
+	<bean id="funcUserModifyPasswordUser" class="dynamic.web.func.Function" parent="funcUserModify">
+		<property name="id" value="UQ"/>
+		<property name="title" value="비밀번호 수정"/>
+		<!-- header value must consist of model's properties [property name]:[column width]:[align]	-->
+		<property name="header" value="password"/>
+		<!-- <property name="hiddenField" value="pageType:h"/> -->
+		<property name="view" value="givus_user_password_edit"/>
+		<property name="successView" value="redirect:/___/p/user/password/modify"/>
+		<property name="updateMethod" value="updatePassword"/>
+	</bean>
+	
+	<bean id="funcUserViewPopup" class="dynamic.web.func.Function" parent="funcUserView">
+		<property name="id" value="UR"/>
+		<property name="title" value="사용자 정보 조회"/>
+		<!-- header value must consist of model's properties [property name]:[column width]:[align]	-->
+		<property name="header" value="name, gender, userStatus, userType, nickname, account, email, isSubscribe, birthday, tel, mobile,  address, registrationNo, hospitalId"/>
+		<!-- view property used by viewResolver -->
+		<property name="renders">
+			<list>
+				<ref bean="render.user.gender"/>
+				<ref bean="render.user.userType"/>
+				<ref bean="render.user.userStatus"/>
+				<ref bean="render.user.isSubscribe"/>
+				<ref bean="render.user.birthday"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+				<!-- <ref bean="button.user.modify"/> -->
+ 				<!-- <ref bean="button.user.lock"/> -->
+				<!-- <ref bean="button.user.delete"/> -->
+		<!-- 		<ref bean="button.user.disuse"/> -->
+			</list>
+		</property>
+	</bean>
+	
+	<!-- buttons -->
+	<bean id="button.user.create" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="사용자 등록"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="link" value="/edit.do?fid=f{funcUserCreate}&amp;action=create"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="button.user.join" parent="button.user.create">
+		<!-- <property name="name" value="create"/> -->
+		<property name="title" value="확인"/>
+		<!-- <property name="className" value="icon-pencil"/>
+		<property name="link" value="/edit.do?fid=f{funcUserCreate}&amp;action=create"/>
+		<property name="useXPath" value="true"/> -->
+	</bean>
+	
+	<bean id="button.user.create.generaluser" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="일반 사용자 등록"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="link" value="/edit.do?fid=f{funcUserCreateGeneralUser}&amp;action=create"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="button.user.create.hospitaluser" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="병원 사용자 등록"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="link" value="/edit.do?fid=f{funcUserCreateHospitalUser}&amp;action=create"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="button.user.modify" class="dynamic.web.view.Button">
+		<property name="name" value="modify"/>
+		<property name="title" value="수정"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="link" value="/edit.do?fid=f{funcUserModify}&amp;action=modify&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+
+ 	<!-- <bean id="button.user.activate" class="dynamic.web.view.Button">
+		<property name="name" value="modify"/>
+		<property name="title" value="활성"/>
+		<property name="link" value="javascript:givus.user.activateUser('#{id}')"/>
+		<property name="useXPath" value="false"/>
+		<property name="useContextPath" value="false"/>
+	</bean>
+		
+ 	<bean id="button.user.lock" class="dynamic.web.view.Button">
+		<property name="name" value="modify"/>
+		<property name="title" value="잠금"/>
+		<property name="link" value="javascript:givus.user.lockUser('#{id}')"/>
+		<property name="useXPath" value="false"/>
+		<property name="useContextPath" value="false"/>
+	</bean> -->
+	
+	<!-- <bean id="button.user.delete" class="dynamic.web.view.Button">
+		<property name="name" value="modify"/>
+		<property name="title" value="삭제"/>
+		<property name="link" value="javascript:givus.user.deleteUser('#{id}')"/>
+		<property name="useXPath" value="false"/>
+	</bean> -->
+
+	<!-- <bean id="button.user.disuse" class="dynamic.web.view.Button">
+		<property name="name" value="delete"/>
+		<property name="title" value="영구삭제"/>
+		<property name="link" value="javascript:givus.user.disuseUser('#{id}')"/>
+		<property name="useXPath" value="false"/>
+	</bean> -->
+	
+	<!-- renders -->
+	<bean id="render.user.isSubscribe" class="dynamic.web.view.RenderRadio">
+		<property name="name" value="isSubscribe"/>
+		<property name="mapPropertyName" value="common.yesno"/>
+	</bean>
+	
+	<bean id="render.user.gender" class="dynamic.web.view.RenderRadio">
+		<property name="name" value="gender"/>
+		<property name="mapPropertyName" value="kr.co.zadusoft.contents.model.UserModel.gender"/>
+	</bean>
+	
+	<bean id="render.user.userType" class="dynamic.web.view.RenderRadio">
+		<property name="name" value="userType"/>
+		<property name="mapPropertyName" value="kr.co.zadusoft.contents.model.UserModel.userType"/>
+	</bean>
+	<bean id="render.user.userStatus" class="dynamic.web.view.RenderRadio">
+		<property name="name" value="userStatus"/>
+		<property name="mapPropertyName" value="kr.co.zadusoft.contents.model.UserModel.userStatus"/>
+	</bean>		
+	<bean id="render.user.id.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="userId"/>
+		<property name="renderDAO" ref="userDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="name"/>
+		<property name="renderSearchField" value="id"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="id"/>
+	</bean>
+	
+	<bean id="render.user.id.hospitaluser.notcon.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="userId"/>
+		<property name="renderDAO" ref="userDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="name"/>
+		<property name="renderSearchField" value="id"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="id"/>
+		<!-- use condition -->
+		<property name="conditions">
+			<list>
+				<ref bean="condition.user.usertype.hospitaluser"/>
+				<ref bean="condition.user.notcon.hospitaluser"/>
+				
+			</list>
+		</property>
+	</bean>
+	<bean id="render.user.id.hospitaluser.connected.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="userId"/>
+		<property name="renderDAO" ref="userDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="name"/>
+		<property name="renderSearchField" value="id"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="id"/>
+		<!-- use condition -->
+		<property name="conditions">
+			<list>
+				<ref bean="condition.user.usertype.hospitaluser"/>
+				<ref bean="condition.user.connected.hospitaluser"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="render.user.id.nickname.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="userId"/>
+		<property name="renderDAO" ref="userDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="nickname"/>
+		<property name="renderSearchField" value="id"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="id"/>
+	</bean>
+	
+	<bean id="render.user.account.relation" class="dynamic.web.view.RenderRelation">
+		<property name="name" value="account"/>
+		<property name="renderDAO" ref="userDAO"/>
+		<!-- use rendering --> 
+		<property name="renderSelectField" value="name"/>
+		<property name="renderSearchField" value="account"/>
+		<!-- use suggest -->
+		<property name="suggestField" value="name"/>
+		<property name="suggestSearchField" value="name"/>
+		<property name="suggestCodeField" value="account"/>
+	</bean>
+	
+	<!-- <bean id="render.user.addressType" class="dynamic.web.view.RenderRadio">
+		<property name="name" value="addressType"/>
+		<property name="mapPropertyName" value="user.addressType"/>
+	</bean>	 -->
+	<bean id="render.user.birthday" class="dynamic.web.view.RenderDate" parent="render.common.dateDefault">
+		<property name="name" value="birthday"/>
+		<property name="dateFormat" value="yyyy-MM-dd"/>
+	</bean>	
+
+	<bean id="render.user.name" class="dynamic.web.view.RenderText">
+		<property name="name" value="name"/>
+		<property name="icon" value="link"/>
+		<property name="link" value="/view.do?fid=f{funcUserView}&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+		<property name="useContextPath" value="true"/>
+	</bean>
+	
+	<bean id="render.user.account" class="dynamic.web.view.RenderText">
+		<property name="name" value="account"/>
+		<property name="icon" value="link"/>
+		<property name="link" value="/view.do?fid=f{funcUserView}&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+		<property name="useContextPath" value="true"/>
+	</bean>
+	<!-- conditions -->	
+	<bean id="condition.user.usertype.generaluser" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="userType"/>
+		<property name="value" value="G"/>
+	</bean>
+	
+	<bean id="condition.user.usertype.hospitaluser" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="userType"/>
+		<property name="value" value="H"/>
+	</bean>
+	
+	<bean id="condition.user.notcon.hospitaluser" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="hospitalId"/>
+		<property name="value" value=""/>
+	</bean>
+	<bean id="condition.user.connected.hospitaluser" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="hospitalId"/>
+		<property name="option" value=">"/>
+		<property name="value" value="0"/>
+	</bean>
+		
+	<bean id="condition.user.userStatus.activate" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="userStatus"/>
+		<property name="value" value="A"/>
+	</bean>
+	<bean id="condition.user.userStatus.lock" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="userStatus"/>
+		<property name="value" value="L"/>
+	</bean>
+	<bean id="condition.user.userStatus.notDeleted" class="dynamic.ibatis.util.PlainSearchCondition">
+		<property name="name" value="userStatus IN ('A', 'L')"/>
+	</bean>
+		
+	<!-- validator -->
+	<bean id="validator.user" class="dynamic.web.view.ValidatorSimple" init-method="init" parent="valid.common.validDefault">
+		<property name="notnull" value="account, nickname, name"/>
+		<property name="unique" value="nickname, account"/>
+	</bean>
+	
+	<!-- <bean id="validator.user.create" class="dynamic.web.view.ValidatorSimple" init-method="init" parent="valid.common.validDefault"> -->
+	<bean id="validator.user.create" class="kr.co.zadusoft.contents.view.GivusValidatorSimple" init-method="init" parent="valid.common.validDefault">
+		<property name="notnull" value="name, nickname, account, password, userType, email, birthday"/>
+		<property name="unique" value="nickname, account"/>
+		<property name="samevalue" value="password, password1"/>
+	</bean>
+	<bean id="validator.user.create.huser" class="kr.co.zadusoft.contents.view.GivusValidatorSimple" init-method="init" parent="valid.common.validDefault">
+	<!-- <bean id="validator.user.create.huser" class="dynamic.web.view.ValidatorSimple" init-method="init" parent="valid.common.validDefault"> -->
+		<property name="notnull" value="nickname, account, password, registrationNo, userType"/>
+		<property name="unique" value="nickname, account"/>
+		<property name="samevalue" value="password, password1"/>
+	</bean>
+	
+</beans>

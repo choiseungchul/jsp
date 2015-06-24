@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	>
+	
+	<bean id="funcMessageList" parent="funcDefault">
+		<property name="id" value="MA"/>
+		<property name="title" value="쪽지 목록"/>
+		<property name="header" value="num:50, name:*:left, sendUserId:100, receiveUserId:100, createDate:100, readDate:100"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.MessageModel"/>
+		<property name="view" value="dynamic/web/table"/>
+<!-- 		<property name="sort" value="viewCount, createDate"/> -->
+		<property name="pageSize" value="20"/>
+		<property name="url" value="list.do"/>
+		<property name="dao" ref="messageReceiveService"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.message.name"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.message.create"/>
+			</list>
+		</property>
+	</bean>	
+	
+	<bean id="funcMessageCreate" parent="funcDefault">
+		<property name="id" value="MB"/>
+		<property name="title" value="쪽지 등록"/>
+		<property name="header" value="name, sendUserId, receiveUserId, message"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.MessageReceiveModel"/>
+		<property name="view" value="dynamic/web/edit2"/>
+		<!--property name="hiddenField" value="boardId:#!{bid}"/-->
+		<property name="url" value="edit.do"/>
+		<property name="width" value="1000"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcMessageList}"/>
+		<property name="dao" ref="messageReceiveService"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.list"/>
+			</list>
+		</property>
+		<property name="validator" ref="validator.message.create"/>
+	</bean>
+
+	<bean id="funcMessageEdit" parent="funcMessageCreate">
+		<property name="id" value="MC"/>
+		<property name="title" value="쪽지 수정"/>
+		<property name="successView" value="redirect:!{xpath}"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcMessageView" parent="funcMessageCreate">
+		<property name="id" value="MD"/>
+		<property name="title" value="쪽지 내용보기"/>
+		<property name="view" value="dynamic/web/view"/>
+		<property name="url" value="view.do"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.message.modify"/>
+				<ref bean="button.message.delete"/>
+				<ref bean="button.common.list"/>
+			</list>
+		</property>
+	</bean>	
+	
+	<bean id="funcMessageDelete" parent="funcDefault">
+		<property name="id" value="ME"/>
+		<property name="title" value="삭제"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.MessageModel"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcMessageList}&amp;"/>
+		<property name="url" value="delete.do"/>
+		<property name="dao" ref="messageReceiveService"/>
+	</bean>
+	
+<!-- 	<bean id="funcMessageSendList" parent="funcMessageList"> -->
+<!-- 		<property name="id" value="MF"/> -->
+<!-- 		<property name="title" value="보낸 쪽지 목록"/> -->
+<!-- 		<property name="conditions"> -->
+<!-- 			<list> -->
+<!-- 				<ref bean="condition.message.mysendlist"/> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean>	 -->
+
+<!-- 	<bean id="funcMessageReceiveList" parent="funcMessageList"> -->
+<!-- 		<property name="id" value="MG"/> -->
+<!-- 		<property name="title" value="받은 쪽지 목록"/> -->
+<!-- 		<property name="conditions"> -->
+<!-- 			<list> -->
+<!-- 				<ref bean="condition.message.myReceivelist"/> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean>	 -->
+	
+	<bean id="funcMessageToHospitalCreate" parent="funcMessageCreate">
+		<property name="id" value="MH"/>
+		<property name="title" value="병원사용자에게 쪽지 쓰기"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.MessageReceiveModel"/>
+		<property name="dao" ref="messageReceiveService"/>
+		<property name="view" value="givus_message_create"/>
+		<property name="url" value="gedit.do"/>
+		<property name="createMethod" value="createMessageToHospitalUsers"/>
+		<!-- <property name="successView" value="redirect:/list.do?fid=f{funcMessageList}"/> -->
+		<property name="successView" value="redirect:/___/p/msg/send/m"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.message.receiveUserId.onlyHospitalUser.relation"/>
+			</list>
+		</property>
+		<property name="validator"><null/></property>
+		<!-- <property name="validator" ref="validator.message.create"/> -->
+	</bean>
+	
+	<bean id="funcMessageSendList" parent="funcDefault">
+		<property name="id" value="MI"/>
+		<property name="title" value="보낸편지함"/>
+		<property name="header" value="num:50, name:*:left, sendUserId:100, receiveUserId:100, createDate:100"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.MessageSendModel"/>
+		<property name="dao" ref="messageSendService"/>
+		<property name="view" value="givus_message_send"/>
+		<property name="url" value="list.do"/>
+		<property name="pageSize" value="12"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.common.createDate.short"/>
+				<ref bean="render.message.receiveUserIds"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcMessageSendView" parent="funcMessageSendList">
+		<property name="id" value="MJ"/>
+		<property name="title" value="쪽지보기"/>
+		<property name="view" value="givus_message_send_view"/>
+		<property name="url" value="view.do"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.common.createDate"/>
+				<ref bean="render.message.contents"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcMessageReceiveList" parent="funcDefault">
+		<property name="id" value="MK"/>
+		<property name="title" value="보낸편지함"/>
+		<property name="header" value="num:50, name:*:left, sendUserId:100, receiveUserId:100, createDate:100"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.MessageReceiveModel"/>
+		<property name="dao" ref="messageReceiveService"/>
+		<property name="view" value="givus_message_receive"/>
+		<property name="url" value="list.do"/>
+		<property name="pageSize" value="12"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.common.createDate.short"/>
+				<ref bean="render.message.sendUserId.relation"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcMessageReceiveView" parent="funcMessageReceiveList">
+		<property name="id" value="ML"/>
+		<property name="title" value="쪽지보기"/>
+		<property name="view" value="givus_message_receive_view"/>
+		<property name="url" value="view.do"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.message.sendUserId.relation"/>
+				<ref bean="render.common.createDate"/>
+				<ref bean="render.message.contents"/>
+			</list>
+		</property>
+	</bean>
+	
+		
+	<bean id="funcMessageToGeneralUserCreate" parent="funcMessageToHospitalCreate">
+		<property name="id" value="MM"/>
+		<property name="title" value="일반사용자에게 쪽지 쓰기"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.MessageReceiveModel"/>
+		<property name="dao" ref="messageReceiveService"/>
+		<property name="view" value="givus_message_create"/>
+		<property name="url" value="gedit.do"/>
+		<property name="createMethod" value="createMessageToUsers"/>
+		<property name="successView" value="redirect:/___/p/msg/send/h"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.message.receiveUserId.onlyGeneralUser.relation"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcMessageToAllCreate" parent="funcMessageToHospitalCreate">
+		<property name="id" value="MN"/>
+		<property name="title" value="전체사용자에게 쪽지 쓰기"/>
+		<property name="view" value="givus_msg_popup"/>
+		<property name="successView" value="redirect:!{xpath}"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.message.receiveUserId.AllUser.relation"/>
+			</list>
+		</property>
+	</bean>	
+	
+	
+	<!-- renders -->
+	<bean id="render.message.name" class="dynamic.web.view.RenderText">
+		<property name="name" value="name"/>
+		<property name="link" value="/view.do?fid=f{funcMessageView}&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>	
+	
+	
+	<bean id="render.message.receiveUserId.onlyHospitalUser.relation" parent="render.user.id.nickname.relation">
+	<!-- <bean id="render.message.receiveUserId.onlyHospitalUser.relation" parent="render.user.id.relation"> -->
+		<property name="name" value="receiveUserId"/>
+		<property name="conditions">
+			<list>
+				<ref bean="condition.user.usertype.hospitaluser"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="render.message.receiveUserId.onlyGeneralUser.relation" parent="render.user.id.nickname.relation">
+	<!-- <bean id="render.message.receiveUserId.onlyGeneralUser.relation" parent="render.user.id.relation"> -->
+		<property name="name" value="receiveUserId"/>
+		<property name="conditions">
+			<list>
+				<ref bean="condition.user.usertype.generaluser"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="render.message.receiveUserId.AllUser.relation" parent="render.user.id.nickname.relation">
+	<!-- <bean id="render.message.receiveUserId.onlyGeneralUser.relation" parent="render.user.id.relation"> -->
+		<property name="name" value="receiveUserId"/>
+		<!-- <property name="conditions">
+			<list>
+				<ref bean="condition.user.usertype.generaluser"/>
+			</list>
+		</property> -->
+	</bean>
+	
+	<bean id="render.message.sendUserId.relation" parent="render.user.id.nickname.relation">
+	<!-- <bean id="render.message.sendUserId.relation" parent="render.user.id.relation"> -->
+		<property name="name" value="sendUserId"/>
+	</bean>
+	
+	<bean id="render.message.receiveUserId.relation" parent="render.user.id.nickname.relation">
+	<!-- <bean id="render.message.receiveUserId.relation" parent="render.user.id.relation"> -->
+		<property name="name" value="receiveUserId"/>
+	</bean>
+	
+	<bean id="render.message.readDate" class="dynamic.web.view.RenderDate" parent="render.common.dateDefault">
+		<property name="name" value="readDate"/>
+		<property name="dateFormat" value="yyyy-MM-dd HH:mm"/>
+	</bean>
+	
+	<bean id="render.message.receiveUserIds" class="kr.co.zadusoft.contents.view.RenderMessageReceiveUserIds">
+		<property name="name" value="receiveUserId"/>
+		<property name="userService" ref="userService"/>
+	</bean>
+	
+	<bean id="render.message.contents" class="kr.co.zadusoft.contents.view.RenderMessageContents">
+		<property name="name" value="message"/>
+	</bean>
+	
+	<!-- buttons -->
+	<bean id="button.message.create" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="쪽지 작성"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="link" value="/edit.do?fid=f{funcMessageCreate}&amp;action=create"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="button.message.modify" class="dynamic.web.view.Button">
+		<property name="name" value="modify"/>
+		<property name="title" value="수정"/>
+		<property name="className" value="icon-pencil"/>
+		<property name="role" value="owner"/>
+		<property name="link" value="/edit.do?fid=f{funcMessageEdit}&amp;action=modify&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="button.message.delete" class="dynamic.web.view.Button">
+		<property name="name" value="delete"/>
+		<property name="title" value="삭제"/>
+		<property name="className" value="icon-trash"/>
+		<property name="role" value="owner"/>
+		<property name="link" value="/delete.do?fid=f{funcMessageDelete}&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>	
+	
+	<!-- conditions -->	
+	<bean id="condition.message.mysendlist" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="sendUserId"/>
+		<property name="value" value="anonymous"/>
+	</bean>
+	
+	<bean id="condition.message.myReceivelist" class="dynamic.ibatis.util.SearchCondition">
+		<property name="name" value="receiveUserId"/>
+		<property name="value" value="anonymous"/>
+	</bean>
+	
+	<!-- validator -->
+	<bean id="validator.message.create" class="dynamic.web.view.ValidatorSimple" init-method="init" parent="valid.common.validDefault">
+		<property name="notnull" value="receiveUserId, name"/>
+	</bean>
+</beans>

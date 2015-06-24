@@ -1,0 +1,75 @@
+.processorder-property-list{
+	border: 1px solid #d7dce5;
+	float:left;
+	margin-right:5px;
+}
+.processorder-type-tr{
+	text-align: center;
+	border-bottom: 1px solid #d7dce5;
+}
+.processorder-property-list, .processorder-div{
+	width: 100px;
+	height: 100%;
+}
+.processorder-value-td{
+	text-align: center;
+	line-height: 110%;
+}
+.processorder-property-list-complete{
+	border: 1px solid red;
+}
+.process-complete {
+	text-align:center;
+}
+.processorder-buttons{
+	float: right;
+	display: none;
+}
+.processorder-button{
+	float:right;
+	margin-right: 3px;
+	cursor:hand;
+}
+.processorder-div{
+	float: left;
+	margin-right: 3px;
+	margin-bottom: 2px;
+}
+.processorder-status-complete{
+	border: 1px solid gray;
+}
+.processorder-status-balju{
+	border: 1px solid #00FF00;
+}
+.processorder-status-process{
+	border: 1px solid blue;
+}
+.processorder-status-exceed{
+	border: 1px solid red;
+}
+.processorder-status-notorder{
+	border: 1px solid yellow;
+} 
+.processorder-status-hidden{
+	border: 1px dashed gray;
+} 
+.processorder-empty{
+	width: 102px;
+	height: 100%;
+	float: left;
+	margin-right: 3px;
+	margin-bottom: 2px;
+}
+.process-detail{
+	text-align:center;
+	padding-top: 5px;
+	padding-left: 1px;
+	padding-right: 1px;
+	padding-bottom: 1px;
+}
+.process-title{
+	font-weight: bold;
+}
+.processorder-requestDeliveryDate-change{
+	color: red;
+}

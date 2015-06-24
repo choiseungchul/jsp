@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renew_board">
+	
+	<!-- 댓글 조회 -->
+	<select id="get_board_comment" resultType="java.util.HashMap">
+		SELECT * FROM givus.Comment where postingId = #{pid}
+		AND parentId IS NULL
+		and isDelete = 'N'
+		ORDER BY createDate DESC
+		LIMIT #{start},#{end}	;
+	</select>
+	<!-- 대댓글 조회 -->
+	<select id="get_board_comment_re" resultType="java.util.HashMap">
+		SELECT * FROM givus.Comment where postingId = #{pid}
+		AND parentId IN ( ${ids} )
+		and isDelete = 'N'
+		ORDER BY createDate ASC;		
+	</select>
+	
+	<!-- 댓글 카운트 -->
+	<select id="get_hospital_view_cnt" resultType="java.lang.Integer" >
+		SELECT count(*) as cnt FROM givus.Comment 
+		where postingId = #{pid}
+		and parentId IS NULL
+		and isDelete = 'N';
+	</select>
+	
+	<!-- 댓글 달기 -->
+	<insert id="add_comment" >
+		INSERT INTO givus.Comment (
+			creator,
+			createDate,
+			isDelete,
+			contents,
+			postingId,
+			parentId
+		)
+		VALUES
+		(
+			#{userId},
+			now(),
+			'N',
+			#{comment},
+			#{postingId}
+			<if test="parentId != 0">
+			, #{parentId}
+			</if>
+		);		
+		<selectKey keyProperty="id" resultType="java.lang.Integer">	
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+	<update id="add_comment_count" parameterType="java.lang.Integer">
+		UPDATE Posting SET commentCount = commentCount+1 WHERE id = #{pid};
+	</update>
+	
+	<!-- 글 추천하기 -->
+	<select id="get_isrecomm" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		SELECT count(*) as cnt FROM PostingUserAction 
+		WHERE postingId = #{pid}
+		AND 
+		actionDate between '${date} 00:00:00' and '${date} 23:59:59' 
+		AND account = #{account};
+	</select>
+	<update id="add_recomm_count" parameterType="java.lang.Integer">
+		UPDATE Posting SET recommendCount = recommendCount+1 WHERE id = #{pid};
+	</update>
+	<insert id="add_recomm_useraction" parameterType="java.util.HashMap">
+		INSERT INTO PostingUserAction 
+		(
+			postingId,
+			actionType,
+			actionDate,
+			account,
+			ipaddr
+		)
+		VALUES
+		(
+			#{pid},
+			'R',
+			now(),
+			#{account},
+			#{ip}
+		);	
+	</insert>
+	
+	<!-- 병원 후기, 리뷰 글쓰기 -->
+	<insert id="add_board" parameterType="java.util.HashMap" >
+		INSERT INTO Posting 
+		(
+			boardId,
+			createDate,
+			creator,
+			subject,
+			contents,
+			viewCount,
+			recommendCount,
+			commentCount,
+			categoryId,
+			customField1,			
+			isDelete	
+		)
+		VALUES
+		(
+			#{type},
+			now(),
+			#{account},
+			#{subject},
+			#{contents},
+			0,
+			0,
+			0,
+			#{cate},
+			#{hid},
+			'N'
+		);
+		<selectKey keyProperty="IDX" resultType="java.lang.Integer">	
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+	
+	<update id="update_points"></update>
+	
+	<!-- 게시판 목록 -->
+	<select id="get_board_list" resultType="java.util.HashMap">
+		select p.*, c.name as cname from Posting as p
+		left join PostingCategory as c
+		ON p.categoryId = c.id 
+		where p.boardId = #{bid}
+		<if test="cate != ''">
+		AND p.categoryId = #{cate}
+		</if>
+		<if test="query != ''">
+		AND ( p.subject LIKE CONCAT('%', #{query},'%')
+		OR p.contents LIKE CONCAT('%', #{query},'%'))
+		</if>
+		AND p.isDelete = 'N'
+		order by ${sort} desc
+		limit #{start}, #{end}
+	</select>
+	<select id="get_board_list_count" resultType="java.lang.Integer">
+		select count(*) from Posting 
+		where boardId = #{bid}
+		<if test="cate != ''">
+		AND categoryId = #{cate}
+		</if>
+		<if test="query != ''">
+		AND ( subject LIKE CONCAT('%', #{query},'%')
+		OR contents LIKE CONCAT('%', #{query},'%'))		
+		</if>
+		AND isDelete = 'N' 
+	</select>
+	
+	<!-- 게시판 글쓰기 -->
+	<insert id="board_write" parameterType="java.util.HashMap" >
+		INSERT INTO Posting 
+		(
+			boardId,
+			createDate,
+			creator,
+			subject,
+			contents,
+			viewCount,
+			recommendCount,
+			commentCount,
+			categoryId,
+			isDelete		
+		)
+		VALUES
+		(
+			#{type},
+			now(),
+			#{account},
+			#{subject},
+			#{contents},
+			0,
+			0,
+			0,
+			#{cate},
+			'N'
+		);
+		<selectKey keyProperty="IDX" resultType="java.lang.Integer">	
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+	
+	<!-- 게시판 글 수정 -->
+	<update id="board_modify" parameterType="java.util.HashMap" >
+		update Posting set
+		categoryId = #{cate},
+		subject = #{subject},
+		contents = #{contents},
+		updateDate = now()
+		where id = #{pid} and creator = #{creator}
+	</update>
+	
+	
+	<!-- 글보기 -->
+	<select id="get_review_board_view" resultType="java.util.HashMap">
+		SELECT p.*, c.name as cname FROM givus.Posting as p 
+		left join PostingCategory c
+		ON c.id = p.categoryId
+		where p.id = #{bid};
+	</select>
+	<!-- 이전글 -->
+	<select id="get_board_prev_id" resultType="java.util.HashMap">
+		SELECT id, subject, createDate, commentCount FROM givus.Posting AS p	
+		WHERE
+		boardId = #{type}
+		and isDelete = 'N'
+		<if test="cid != 0">
+		AND categoryId = #{cid}		
+		</if>
+		AND createDate &lt; #{cdate} limit 0,1;
+	</select>
+	<!-- 다음글 -->
+	<select id="get_board_next_id" resultType="java.util.HashMap">
+		SELECT  id, subject, createDate, commentCount FROM givus.Posting 
+		WHERE 
+		boardId = #{type}
+		and isDelete = 'N'
+		<if test="cid != 0">
+		AND categoryId = #{cid}
+		</if>
+		AND createDate &gt; #{cdate} limit 0,1;
+	</select>
+	
+	<!-- 조회수증가 -->
+	<update id="add_viewcount" parameterType="java.lang.Integer">
+		update Posting set
+		viewCount = viewCount + 1
+		where id = #{id}
+	</update>
+	
+	<!-- 글 삭제 -->
+	<update id="del_posting" parameterType="java.lang.Integer">
+		update Posting set
+		isDelete = 'Y'
+		where id = #{pid} and creator = #{creator}
+	</update>
+	
+</mapper>

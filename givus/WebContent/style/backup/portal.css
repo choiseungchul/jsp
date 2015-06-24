@@ -1,0 +1,59 @@
+body {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+.portlets {
+}
+
+.portlet {
+	margin-top:10px;
+	margin-left:0px;
+	margin-right:10px;
+}
+
+.portlet-button-div, .portlet-title, .portlet-list {
+	margin-top:10px;
+}
+
+.portlet-list{
+	border-top: 1px solid #d7dce5;
+	border-bottom: 2px solid #d7dce5;
+}
+
+.portlet-header-td {
+	text-align:center;
+}
+
+.portlet-left{
+	float:left;
+	clear:left;
+}
+
+.portlet-right{
+	float:left;
+}
+
+.portlet-header{
+	height:22px;
+}
+.portlet-title{
+	height:20px;
+	float:left;
+}
+.portlet-buttons{
+	float:right;
+	margin-top:10px;
+}
+.portlet-icons{
+	height:20px;
+	float:right;
+	margin-top:7px;
+}
+.portlet-icon{
+	float:right;
+	width:17px;
+	height:17px;
+	padding-top: 3px;
+	margin-right: 3px;
+}

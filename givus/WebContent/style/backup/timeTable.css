@@ -1,0 +1,172 @@
+
+table {
+	color: #181818;
+	background-color: white;
+	table-layout: fixed;
+}
+
+table th{
+	color: #181818;
+	font-weight: normal;
+	text-align: center;
+	padding: 2px 2px 0px 2px;
+	border-top: 1px solid #cbcbcb;
+	border-bottom: 1px solid #d7dce5;
+	height: 21px; 
+	border-right: 1px solid #cbcbcb;
+	border-left: 1px solid #cbcbcb;
+}
+
+table tr {
+	height: 23px;
+}
+
+table td {
+	color: #454545;
+	padding: 3px 3px 0px 3px;
+	text-overflow: ellipsis; /* for browsers that supports it */  
+	overflow: hidden; /* for other browsers */
+	white-space: nowrap; /* force one-line text */
+	border-bottom: 1px solid #d7dce5;
+}
+
+/*  margin */
+.table-button-div, .table-title{
+	margin-top:0px;
+}
+.table-list{
+	margin-top:5px;
+}
+.table-title-div{
+	margin-top: 10px;
+}
+/* move to css.jsp
+.table-title{
+	font-weight: bold;
+	background: url(/bjs/images/bullet_title.gif) left center no-repeat;
+	padding-left: 15px;
+}
+*/
+
+.table-div {
+	margin-bottom: 20px;
+}
+
+.table-list{
+	border-bottom: 2px solid #d7dce5;
+	width: 100%;
+	
+}
+.table-header-td {
+	text-align:center;
+}
+
+.table-filter-div{
+	padding: 10px;
+	border: 1px solid #d7dce5;
+}
+
+.table-filter-select{
+	border:1px solid #7F9DB9;
+	width: 100px;
+}
+
+.table-nav-div {
+	text-align: center;
+	margin-top: 20px;
+}
+
+.table-pageinfo{
+	float:right;
+}
+
+.table-nav, .table-nav-selected{
+	margin-left: 5px;
+	padding: 4px;
+	border: 1px solid white;
+	/*border-right: 1px solid #d7dce5;
+	border-left: 1px solid #d7dce5;
+	*/
+}
+
+.table-nav-prev, .table-nav-next{
+	margin-left: 5px;
+	margin-right: 5px;
+}
+.table-nav-selected {
+	border: 1px solid #cbcbcb;
+	font-weight: bold;
+}
+
+form#searchform select, form#searchform input{
+	vertical-align:middle;
+}
+
+.table-data-td a {
+	/* display:block; */
+	width: 100%;
+}
+/* move to css.jsp
+.table-nodata{
+	width: 250px;
+	height: 50px;
+	padding-top: 17px;
+	background: url(/bjs/images/search.gif) left center no-repeat;
+}
+*/
+
+.table-header-checkbox, .table-data-checkbox{
+	width: 25px;
+	text-align: center;
+}
+
+.table-tr-first{
+	background-color: #efefef;
+}
+
+.table-tr-alert{
+	background-color: IndianRed;
+}
+
+.table-td-alert{
+	color:white;
+}
+
+.table-tr-alert td{
+	color: white;
+}
+
+.table-tr-alert a{
+	color: white;
+}
+
+.productorder-tr-group-first{
+	background-color: #efefef;
+}
+
+.no-ellipsis{
+	text-overflow: none;  
+	overflow: visible;
+	white-space: normal;
+}
+
+.text-filter{
+	height: 100%;
+	padding: 3px;
+	border: 1px solid #d7dce5;
+	float:left;
+	margin-bottom: 10px;
+}
+
+.text-filter-item{
+	height: 15px;
+	border-right: 1px solid #d7dce5;
+	padding: 3px;
+	padding-right: 6px;
+	margin-right: 3px;
+	float: left;
+}
+
+.table-trAdditionalPage{
+	/*border: 1px solid #d7dce5;*/
+}

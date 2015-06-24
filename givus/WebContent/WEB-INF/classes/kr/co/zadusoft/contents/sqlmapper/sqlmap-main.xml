@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renew">
+	
+	<select id="search"  resultType="kr.co.zadusoft.contents.model.MainModel">
+		SELECT id, name
+		FROM board 		
+	</select>
+	
+	<select id="count" resultType="java.lang.Integer" parameterType="param">
+		SELECT COUNT(id)
+		FROM AdsPosition
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="get" parameterType="java.lang.Integer" resultType="kr.co.zadusoft.contents.model.AdsPositionModel">
+		SELECT * 
+		FROM AdsPosition 
+		WHERE id = #{id}
+	</select>
+	
+	<select id="getNoCache" parameterType="java.lang.Integer" resultType="kr.co.zadusoft.contents.model.AdsPositionModel">
+		SELECT * 
+		FROM AdsPosition 
+		WHERE id = #{id}
+	</select>
+	
+	<select id="getNoCacheWithParam" parameterType="param" resultType="kr.co.zadusoft.contents.model.AdsPositionModel">
+		SELECT * 
+		FROM AdsPosition 
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="getByCondition" resultType="kr.co.zadusoft.contents.model.AdsPositionModel" parameterType="param">
+		SELECT *
+		FROM AdsPosition
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="getFieldByCondition" resultType="java.lang.Object" parameterType="param">
+		SELECT ${fieldName}
+		FROM AdsPosition
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="exist" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT COUNT( id)
+		FROM AdsPosition
+		WHERE id = #{id}
+	</select>
+	
+	<select id="existByCondition" resultType="java.lang.Integer" parameterType="param">
+		SELECT COUNT( id)
+		FROM AdsPosition
+		<include refid="where_conditions"/>
+	</select>
+	
+	<sql id="where_conditions">
+		<if test="conditions != null">
+		<where>
+			<foreach collection="conditions" item="condition" open="(" separator="AND" close=")">
+				${condition.prefix} ${condition.name} ${condition.option} #{condition.value} ${condition.suffix}
+			</foreach>
+		</where>
+		</if>
+	</sql>
+</mapper>

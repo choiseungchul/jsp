@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renew_mypage">
+	
+	<!-- 내가 쓴글 -->
+	<select id="get_my_board_list" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT p.*, c.name as cname FROM givus.Posting as p
+		left join PostingCategory as c
+		on p.categoryId = c.id
+		where p.creator = #{account}
+		AND p.isDelete ='N'
+		limit #{start}, #{end};
+	</select>
+	<select id="get_my_board_list_count" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT count(*) FROM givus.Posting
+		where creator = #{account}		
+		AND isDelete ='N'
+	</select>
+	<!-- 나의 출석횟수 -->
+	<select id="get_my_attend_count" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT count(*) FROM givus.Comment
+		where creator = #{account}
+		AND postingId = -99999
+		AND isDelete ='N'	
+		AND parentId IS NULL;
+	</select>
+	
+	<!-- 댓글단 게시물 -->
+	<select id="get_my_commented_board" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT p.*, c.*, pc.name as cname FROM givus.Comment as c
+		left join Posting as p		
+		ON c.postingId = p.id
+		left join PostingCategory as pc
+		on p.categoryId = pc.id
+		where c.creator = #{account}
+		AND c.postingId &lt;&gt; -99999
+		and p.isDelete = 'N'	
+		group by p.id
+		limit #{start}, #{end};	
+	</select>
+	
+	<!-- 내가 쓴 댓글-->
+	<select id="get_my_comment_list" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT * FROM givus.Comment
+		where creator = #{account}
+		AND isDelete ='N'
+		AND postingId &lt;&gt; -99999
+		order by createDate desc
+		limit #{start}, #{end};
+	</select>
+	<!-- 내가 쓴 댓글 수 -->
+	<select id="get_my_comment_count" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT count(*) FROM givus.Comment
+		where creator = #{account}
+		AND postingId &lt;&gt; -99999
+		AND isDelete ='N'
+	</select>
+	
+	<!-- 삭제한 게시물 -->
+	<select id="get_my_board_delete_list" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		SELECT * FROM givus.Posting
+		where creator = #{account}
+		AND isDelete ='Y'
+		limit #{start}, #{end};
+	</select>
+	<select id="get_my_board_delete_list_count" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT count(*) FROM givus.Posting
+		where creator = #{account}
+		AND isDelete ='Y'
+	</select>
+	
+	<!-- 게시글 삭제 -->
+	<update id="delete_board">
+		update Posting set
+		isDelete = 'Y'
+		where id IN ( ${ids} );
+	</update>
+	
+	<!-- 댓글 삭제 -->
+	<update id="delete_comment" >
+		update Comment set
+		isDelete = 'Y'
+		where id IN ( ${ids} );
+	</update>
+	<update id="up_reduce_viewcount">
+		update Posting set
+		commentCount = commentCount - #{cnt}
+		where id = #{id};
+	</update>
+	
+	
+	
+	
+	
+	<!-- 내정보 수정 페이지 -->
+	<!-- 내정보 보기 -->
+	<select id="get_my_info" resultType="java.util.HashMap">
+		select * from User 
+		where email = #{email};
+	</select>
+	<!-- 관심 카테고리 ( 키워드 ) -->
+	<select id="get_keywords" resultType="java.util.HashMap">
+		SELECT * FROM givus.Keyword;
+	</select>
+	<select id="get_user_keywords" resultType="java.util.HashMap">
+		SELECT keywordId FROM givus.UserKeyword
+		where userId = #{uid};
+	</select>
+	<!-- 주소검색 -->
+	<select id="zipcode_search" resultType="java.util.HashMap">
+		SELECT * FROM givus.ZipcodeZibun where fullAddress LIKE CONCAT('%', #{query},'%');
+	</select>
+	
+	<update id="set_my_info" parameterType="java.util.HashMap">
+		UPDATE User SET
+		tel = #{tel}, updateDate = now(), address1 = #{address1}, address2 = #{address2}, postalCode = #{postalCode}
+		WHERE id = #{id};
+	</update>
+	<!-- 키워드 등록 -->
+	<delete id="del_user_keywords" parameterType="java.util.HashMap">
+		delete from UserKeyword
+		where userId = #{uid};
+	</delete>
+	<insert id="add_user_keywords" parameterType="java.util.HashMap">
+		insert into UserKeyword
+		(userId, keywordId)
+		values
+		( #{uid}, #{keywordId} );
+	</insert>
+	
+	<!-- 비밀번호 변경 -->
+	<update id="change_password" parameterType="java.util.HashMap">
+		update User set
+		password = password(#{pass})
+		where id = #{id}
+	</update>
+	
+	<!-- 문의하기 -->
+	<insert id="add_user_contact" parameterType="java.util.HashMap">
+		insert into Contact
+		( subject, userId, createDate, contents, reply_yn, isDelete )
+		values
+		( #{title}, #{uid}, now(), #{content}, 'N', 'N' );
+	</insert>
+	<!-- 답변하기 -->
+	<update id="reply_user_contact" parameterType="java.util.HashMap">
+		update Contact set
+		reply = #{reply}, 
+		reply_id = #{reply_id}, 
+		reply_name = #{reply_name}, 
+		reply_yn = #{reply_yn}
+		where id = #{id}
+	</update>
+	<!-- 문의하기 목록 -->
+	<select id="get_user_contact_list" resultType="java.util.HashMap">
+		select * from Contact
+		where userId = #{uid}
+		and isDelete = 'N'
+		order by createDate desc
+		limit #{start}, #{end}
+	</select>
+	<select id="get_user_contact_list_count" resultType="java.lang.Integer">
+		select count(*) from Contact		
+		where userId = #{uid}
+		and isDelete = 'N'
+	</select>
+	<!-- 문의 보기 -->
+	<select id="get_user_contact_view" resultType="java.util.HashMap">
+		select * from Contact
+		where id = #{id} and userId = #{uid}
+	</select>
+	<!-- 문의삭제 -->
+	<update id="del_user_contact" parameterType="java.util.HashMap">
+		update Contact set
+		isDelete ='Y'
+		where id IN ( ${ids} );
+	</update>
+	
+	
+	<!-- 회원탈퇴 -->
+	<insert id="add_withraw" parameterType="java.util.HashMap">
+		insert into UserWithraw
+		(userId, reason1, reason2, reasonText, createDate, user_agreement)
+		values
+		(#{uid}, #{reason1}, #{reason2}, #{reasonText},  now(), #{agree} )		
+	</insert>
+	<!-- 탈퇴 대기 -->
+	<update id="user_withraw_wait" parameterType="java.util.HashMap">
+		update User set
+		userStatus = 'W'
+		where id = #{id}
+	</update>
+	<!-- 탈퇴 승인 -->
+	<update id="user_withraw_ok" parameterType="java.util.HashMap">
+		update User set
+		userStatus = 'D'
+		where id = #{id}
+	</update>
+
+
+	<!-- 병원회원  -->
+	<!-- 병원조회 -->
+	<select id="get_my_hospital" resultType="java.util.HashMap">
+		select h.* from Hospital as h
+		left join UserConnectHospital as uh
+		on h.id = uh.hospitalId
+		where uh.userId = #{uid} and uh.status = 'A'
+		limit 0, 1
+	</select>
+	<select id="get_my_hos_stat" resultType="java.util.HashMap">
+		select * from HospitalStats
+		where hospitalId = #{hid}
+	</select>
+	
+	<update id="change_hos_info_basic" parameterType="java.util.HashMap">
+		UPDATE Hospital SET
+		tel = #{tel}, fax = #{fax}, homepage = #{homepage}, address = #{address}, address1 = #{address1}, address2 = #{address2},
+		locationCode = #{locationCode}, business_id = #{business_id}, postalCode = #{postalCode}
+		WHERE id = #{hid};
+	</update>
+	
+	<update id="change_hos_intro" parameterType="java.util.HashMap">
+		update Hospital set
+		introduction = #{introduction}, specialistCount = #{specialistCount}, anestheticCount = #{anestheticCount},
+		patientRoom = #{patientRoom}, recoveryRoom = #{recoveryRoom}, interpreter = #{interpreter},
+		pickupService = #{pickupService}, mostOperation1 = #{mostOperation1}, mostOperation2 = #{mostOperation2},
+		scale = #{scale}, counselCount = #{counselCount}, reviewPicCount = #{reviewPicCount}, foreignerReg = #{foreignerReg},
+		possibleSurgery = #{possibleSurgery}, hours = #{hours}		
+		where id = #{hid}
+	</update>
+	
+	
+	
+
+</mapper>

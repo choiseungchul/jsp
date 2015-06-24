@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="messagerelation">
+	<select id="getReceiveInfo" parameterType="java.util.Map" resultType="kr.co.zadusoft.contents.model.MessageRelationModel">
+		SELECT
+			MR.*, U.name receiveUserName
+		FROM
+			MessageRelation MR, MessageReceive M, User U
+		WHERE
+			MR.receiveMessageId = M.id
+			AND M.receiveUserId = U.id
+			AND MR.sendMessageId = #{sendMessageId}
+	</select>
+</mapper>

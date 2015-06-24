@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="admin_board">
+	
+	<!-- 게시판 목록 -->
+	<select id="get_board_list" resultType="java.util.HashMap">
+		select p.*, c.name as cname
+		<if test="bid == 25 || bid == 26">
+		,h.name as hname, h.id as hid
+		</if>
+		from Posting as p
+		left join PostingCategory as c
+		ON p.categoryId = c.id
+		<if test="bid == 25 || bid == 26">
+		left join Hospital as h
+		on p.customField1 = h.id
+		</if>		
+		where p.boardId = #{bid}
+		<if test="cate != ''">
+		AND p.categoryId = #{cate}
+		</if>
+		<if test="query != ''">
+		AND ( p.subject LIKE CONCAT('%', #{query},'%')
+		OR p.contents LIKE CONCAT('%', #{query},'%'))
+		</if>
+		order by ${sort} desc
+		limit #{start}, #{end}
+	</select>
+	<select id="get_board_list_count" resultType="java.lang.Integer">
+		select count(*) from Posting
+		where boardId = #{bid}		
+		<if test="cate != ''">
+		AND categoryId = #{cate}
+		</if>
+		<if test="query != ''">
+		AND ( subject LIKE CONCAT('%', #{query},'%')
+		OR contents LIKE CONCAT('%', #{query},'%'))		
+		</if>
+	</select>
+	
+	<!-- 게시판 글쓰기 -->
+	<insert id="board_write" parameterType="java.util.HashMap" >
+		INSERT INTO Posting 
+		(
+			boardId,
+			createDate,
+			creator,
+			subject,
+			contents,
+			viewCount,
+			recommendCount,
+			commentCount,
+			categoryId,
+			isDelete		
+		)
+		VALUES
+		(
+			#{type},
+			now(),
+			#{account},
+			#{subject},
+			#{contents},
+			0,
+			0,
+			0,
+			#{cate},
+			'N'
+		);
+		<selectKey keyProperty="IDX" resultType="java.lang.Integer">	
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+	
+	<select id="get_user_list" resultType="java.util.HashMap">
+		select id, name, account from User
+	</select>
+	
+	<update id="mod_user_posting" parameterType="java.util.HashMap">
+		update Posting set
+		categoryId = #{category},
+		subject = #{subject},
+		contents = #{contents},
+		creator = #{creator},
+		viewCount = #{viewCount}
+		<if test="ch_hid != ''">
+		,customField1 = #{ch_hid}
+		</if>
+		where id = #{pid}
+	</update>
+	
+	<insert id="add_user_posting" parameterType="java.util.HashMap">
+		insert into Posting 
+		(
+			boardId, createDate, creator, subject, contents, 
+			viewCount, recommendCount, categoryId, commentCount, customField1,
+			isDelete 			
+		)
+		values
+		(
+			#{bid}, #{createDate}, #{creator}, #{subject}, #{contents},
+			#{viewCount} , 0, #{cateId}, 0, #{hid},
+			'N'
+		)
+		<selectKey keyProperty="IDX" resultType="java.lang.Integer">	
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+	
+	<update id="del_user_posting" parameterType="java.util.HashMap">
+		update Posting set
+		isDelete = 'Y'
+		where id IN (  ${ids}  )
+	</update>
+	
+	<update id="del_user_comment" parameterType="java.util.HashMap">
+		update Comment set
+		isDelete = 'Y'
+		where id IN (  ${ids}  )
+	</update>
+
+	<!-- 출석체크 -->
+	<select id="get_attend_list" resultType="java.util.HashMap">
+		select * from Comment 
+		where postingId = -99999
+		<if test="query != ''">
+		AND contents LIKE CONCAT('%', #{query},'%'))
+		</if>
+		limit #{start}, #{end}
+	</select>	
+	<select id="get_attend_list_count" resultType="java.lang.Integer">
+		select count(*) as cnt from Comment
+		where postingId = -99999
+		<if test="query != ''">
+		and contents LIKE CONCAT('%', #{query},'%'))
+		</if> 		
+	</select>
+	
+	<select id="get_hospitals" resultType="java.util.HashMap">
+		select * from Hospital		
+	</select>
+
+</mapper>

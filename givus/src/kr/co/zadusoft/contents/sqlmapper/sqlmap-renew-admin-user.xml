@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="admin_user">
+	
+	<!-- 사용자 목록 -->
+	<select id="get_list" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select 
+			u.*, 
+			h.name as hname, h.id as hid,
+			hc.status as hcstat, 
+			w.reason1, w.reason2, w.reasonText 
+		from User as u
+		left join UserConnectHospital as hc
+		on u.id = hc.userId
+		left join UserWithraw as w
+		on u.id = w.userId
+		left join Hospital as h
+		on hc.hospitalId = h.id
+		where u.id != 1
+		<if test="srch_code != null">
+			and ${srch_code} like '%${srch_text}%'
+		</if>
+		order by u.id desc
+		limit #{start}, #{end}
+	</select>
+	<select id="get_count" resultType="java.lang.Integer">
+		select 
+			count(*) 			
+		from User as u
+		left join UserConnectHospital as hc
+		on u.id = hc.userId
+		left join UserWithraw as w
+		on u.id = w.userId
+		left join Hospital as h
+		on hc.hospitalId = h.id
+		where u.id != 1
+		<if test="srch_code != null">
+			and ${srch_code} like '%${srch_text}%'
+		</if>
+	</select>
+	
+	<!-- 사용자보기 -->
+	<select id="get_one" resultType="java.util.HashMap">
+		select 
+			u.*, 
+			h.name as hname, h.id as hid,
+			hc.status as hcstat, 
+			w.reason1, w.reason2, w.reasonText, w.createDate as wcdate, w.user_agreement as wuser_agr 
+		from User as u
+		left join UserConnectHospital as hc
+		on u.id = hc.userId
+		left join UserWithraw as w
+		on u.id = w.userId
+		left join Hospital as h
+		on hc.hospitalId = h.id
+		where u.id = #{uid}
+		limit 0,1
+	</select>	
+	
+	<!-- 지역코드 -->
+	<select id="get_location" resultType="java.util.HashMap">
+		select * from Code 
+		where category = 'L'
+		order by sort asc
+	</select>
+	
+	
+	<!-- 사용자 업데이트 -->
+	<update id="update_user" parameterType="java.util.HashMap">
+		update User set
+		name = #{name},
+		email = #{email},
+		birthday = #{birthday},
+		gender = #{gender},
+		userType = #{userType},
+		userStatus = #{userStatus}
+		where id = #{uid}
+	</update>
+	<update id="update_hcstat" parameterType="java.util.HashMap">
+		update UserConnectHospital set
+		status = #{status}, approvalDate = now()
+		where userId = #{uid}
+	</update>
+	
+</mapper>

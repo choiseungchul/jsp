@@ -1,0 +1,48 @@
+
+<!-- saved from url=(0024)http://admin.mnbpro.com/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>어드민 로그인 페이지</title>
+
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Pragma" content="no-cache">
+<link rel="stylesheet" href="style.css" type="text/css">
+<script language="javascript">
+	function doLogin() {
+		var frm1 = document.form1;
+		if( frm1.login_id.value == "" ) {
+			alert( "아이디를 입력해 주세요." );
+			frm1.login_id.focus();
+			return;		
+		}
+		if( frm1.login_pwd.value == "" ) {
+			alert( "암호를 입력해 주세요." );
+			frm1.login_pwd.focus();
+			return;		
+		}
+		frm1.submit();
+	}
+</script>
+</head>
+<body style="text-align:center" onload="javascript:document.form1.login_id.focus();">
+<form name="form1" method="post" action="http://admin.mnbpro.com/servlet/LoginServlet">
+<div class="snadlogbox" align="left">
+ 	<ul class="snadlogbox_id">
+    	<li><input type="text" name="login_id" class="snadlogbox_in" style="ime-mode:inactive"></li>
+        <li><input type="password" name="login_pwd" onkeyup="javascript:if(event.keyCode==13){ doLogin(); }" class="snadlogbox_in"></li>
+    </ul>
+    <ul class="snadlogbox_bt">
+     	<li><a href="javascript:doLogin();" onfocus="this.blur();"><img src="bt.gif" width="66" height="66"></a></li>
+    </ul>
+    <!-- 
+    <ul class="snadlogbox_bt">
+    	<li>
+	    	<div><input type="radio" name="login_type" value="seller" checked> 판매자</div>
+	    	<div><input type="radio" name="login_type" value="distr"> 마스터벤더</div>
+    		<div><input type="radio" name="login_type" value="admin"> 관리자</div>
+    	</li>
+    </ul>
+     -->
+ </div>
+</form>
+
+</body></html>

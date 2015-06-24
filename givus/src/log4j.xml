@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<log4j:configuration>
+	<!-- param name="ConversionPattern" value="%d %-5p [%t] %-17c{2} (%13F:%L) 
+		%3x - %m%n"/ -->
+	<!-- param name="ConversionPattern" value="%d %-5p [%t] %C{2} (%C:%L) - 
+		%m%n"/ -->
+	<!-- param name="ConversionPattern" value="[%d{ABSOLUTE}] %-5p %l - %m%n"/ -->
+	<!-- param name="ConversionPattern" value="%d %-5p [%t] %C (%F:%L) - %m%n"/ -->
+
+	<!-- 1. console appender -->
+	<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %-5p [%t] %C (%F:%L) - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="SQLLOGFILE" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="d:/sProject/GIVUS/log/DYNAMIC_SQLLOG.log" />
+        <param name="Append" value="true"/>  
+        <param name="DatePattern" value="'.'yyMMdd"/>  
+        <layout class="org.apache.log4j.PatternLayout">
+        	<param name="ConversionPattern" value="%d %-5p [%t] %C (%F:%L) - %m%n" />
+        </layout>
+    </appender>
+
+	<!-- log SQL with timing information, post execution -->
+	<logger name="jdbc.sqltiming" additivity="true">
+		<level value="ERROR" />
+	</logger>
+	<logger name="jdbc.audit" additivity="true">
+		<level value="ERROR" />
+	</logger>
+	<logger name="jdbc.resultset" additivity="true">
+		<level value="ERROR" />
+	</logger>
+	<logger name="jdbc.connection" additivity="true">
+		<level value="ERROR" />
+	</logger>
+	
+	<logger name="jdbc.sqlonly" additivity="true">
+		<level value="INFO" />
+		<appender-ref ref="SQLLOGFILE" />
+	</logger>
+
+	<root>
+		<priority value="INFO" />
+		<appender-ref ref="STDOUT" />
+	</root>
+
+</log4j:configuration>

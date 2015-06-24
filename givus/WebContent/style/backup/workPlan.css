@@ -1,0 +1,57 @@
+.table-title-div{
+	margin-bottom: 5px;
+}
+.table-data-tr {
+	height: 30px;
+}
+
+.partName {
+	/*font-weight: bold;*/
+}
+
+.workplan-title-list{
+	margin-bottom: 5px;
+}
+
+.workplan-title-list-data{
+	font-weight: bold;
+	padding-left: 15px;
+}
+
+.productInfo-table-list{
+	margin-bottom : 10px;
+}
+
+.workplan-title-div{
+	text-align: center;
+	height: 50px;
+}
+
+.workplan-title-div span{
+	font-size:20px;
+	font-weight: bold;
+}
+
+.process-config{
+	float:right; 
+	cursor:hand;
+	margin-left: 3px;
+}
+
+.process-config-window-buttons{
+	text-align: center;
+	width: 100%;
+	position: absolute;
+	top: 330px; 
+	color: #000;
+}
+
+.button{
+	border: 1px solid #d7dce5;
+}
+
+.process-title{
+	height:20px;
+	vertical-align:middle;
+	padding-top:5px;
+}

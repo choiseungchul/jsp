@@ -1,0 +1,14 @@
+spring library
+	spring-xxx.jar
+jsp, jstl, el
+	jstl-x.x.x.jar
+	standard-x.x.x.jar
+json
+	jackson-all-x.x.x.jar
+log
+	commons-logging-x.x.x.jar
+	log4j-x.x.x.jar
+transaction
+	aopaliance.jar
+	aspectjrt.jar
+	aspectweaver.jar

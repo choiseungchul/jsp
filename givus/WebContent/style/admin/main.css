@@ -1,0 +1,8 @@
+@CHARSET "UTF-8";
+@IMPORT url("common.css");
+.wrap{
+	min-height: 100%;
+}
+.wrapper{
+	min-height: 600px;
+}

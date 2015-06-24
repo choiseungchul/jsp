@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="postingcategory">
+	
+    <insert id="insert" parameterType="kr.co.zadusoft.contents.model.PostingCategoryModel">
+    	INSERT INTO PostingCategory (
+        			id,
+        			name,
+        			boardId,
+        			isDelete
+            	
+    	)VALUES(
+        			#{id},
+        			#{name},
+        			#{boardId},
+        			#{isDelete}
+            
+    	)
+    	<selectKey keyProperty="id" resultType="java.lang.Integer">	
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>	
+    </insert>
+		
+	<update id="update" parameterType="kr.co.zadusoft.contents.model.PostingCategoryModel">
+		UPDATE PostingCategory SET
+        			id = #{id},
+        			name = #{name},
+        			boardId = #{boardId},
+        			isDelete = #{isDelete}
+        		WHERE
+		id = #{id}
+	</update>
+	
+	<update id="updateByCondition" parameterType="param">
+		UPDATE PostingCategory SET
+	        ${fieldName} = #{fieldValue}
+	    <include refid="where_conditions"/>
+	</update>
+	
+	<delete id="delete" parameterType="java.lang.Integer">
+		DELETE FROM PostingCategory WHERE id = #{id}
+	</delete>
+	
+	<delete id="deleteByCondition" parameterType="param">
+		DELETE FROM PostingCategory
+		<include refid="where_conditions"/>
+	</delete>
+	
+	<select id="search" parameterType="param" resultType="kr.co.zadusoft.contents.model.PostingCategoryModel">
+		SELECT ${selectField} 
+		FROM PostingCategory 
+		<include refid="where_conditions"/>
+		<if test="orderCondition != null">
+		ORDER BY ${orderCondition}
+		</if>
+		<if test="limitStart >= 0">
+		LIMIT #{limitStart}, #{limitSize}
+		</if>
+	</select>
+	
+	<select id="count" resultType="java.lang.Integer" parameterType="param">
+		SELECT COUNT(id)
+		FROM PostingCategory
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="get" parameterType="java.lang.Integer" resultType="kr.co.zadusoft.contents.model.PostingCategoryModel">
+		SELECT * 
+		FROM PostingCategory 
+		WHERE id = #{id}
+	</select>
+	
+	<select id="getNoCache" parameterType="java.lang.Integer" resultType="kr.co.zadusoft.contents.model.PostingCategoryModel">
+		SELECT * 
+		FROM PostingCategory 
+		WHERE id = #{id}
+	</select>
+	
+	<select id="getNoCacheWithParam" parameterType="param" resultType="kr.co.zadusoft.contents.model.PostingCategoryModel">
+		SELECT * 
+		FROM PostingCategory 
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="getByCondition" resultType="kr.co.zadusoft.contents.model.PostingCategoryModel" parameterType="param">
+		SELECT *
+		FROM PostingCategory
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="getFieldByCondition" resultType="java.lang.Object" parameterType="param">
+		SELECT ${fieldName}
+		FROM PostingCategory
+		<include refid="where_conditions"/>
+	</select>
+	
+	<select id="exist" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT COUNT( id)
+		FROM PostingCategory
+		WHERE id = #{id}
+	</select>
+	
+	<select id="existByCondition" resultType="java.lang.Integer" parameterType="param">
+		SELECT COUNT( id)
+		FROM PostingCategory
+		<include refid="where_conditions"/>
+	</select>
+	
+	<sql id="where_conditions">
+		<if test="conditions != null">
+		<where>
+			<foreach collection="conditions" item="condition" open="(" separator="AND" close=")">
+				${condition.prefix} ${condition.name} ${condition.option} #{condition.value} ${condition.suffix}
+			</foreach>
+		</where>
+		</if>
+	</sql>
+</mapper>

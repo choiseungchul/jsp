@@ -1,0 +1,134 @@
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+@CHARSET "UTF-8";
+
+/* boundaries for all */
+* {
+	/* border: 0px; */
+	margin: 0px;
+	padding: 0px;
+	/*border-style: none;*/
+}
+
+/* fonts for all */
+* {
+/*	font-size: 9pt; */
+	font-family: "NanumGothic", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	word-spacing: normal;
+	text-decoration: none;
+/*	color: #656565; */
+}
+
+a:link {
+	color: black;
+	text-decoration: none;
+}
+a:visited {
+	color: black;
+	text-decoration: none;
+}
+a:hover {
+	color: black;
+	text-decoration: underline;
+	font-weight: bold;
+}
+	
+body {
+	padding: 3px;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0px;
+}
+
+img {
+	vertical-align: middle;
+	border-style: none;
+}
+
+.hangul {
+	ime-mode: active;
+}
+
+select {
+	font-size: 12px;
+	/*height: 18px;*/
+	background-color: white;
+	color: #454545;
+	border: 1px solid #7f9db9;
+}
+
+label {
+	margin-right: 3px;
+	margin-left: 1px;
+}
+
+input{
+	vertical-align:middle;
+}
+.input-text {
+	font-size: 12px;
+	height: 15px;
+	background-color: white;
+	color: #454545;
+	padding-left: 2px;
+	padding-top: 2px;
+	border: 1px solid #7f9db9;
+}
+
+.input-textarea {
+	font-size: 12px;
+	background-color: white;
+	color: #454545;
+	padding-left: 2px;
+	padding-top: 2px;
+	border: 1px solid #7f9db9;
+	overflow-x: scroll;
+	overflow-y: scroll;
+	overflow: -moz-scrollbars-horizontal;
+}
+
+.button{
+	vertical-align:middle;
+	border: 1px solid #cbcbcb;
+	height: 20px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 4px;
+	padding-left: 12px;
+	margin-right: 3px;
+	cursor:pointer;
+}
+
+.button-over{
+	font-weight: bold;
+	cursor:hand;
+	text-decoration:none;
+}
+
+.disabled {
+	background-color: #efefef;
+}
+
+.console{
+	font-family: 'courier new';
+}
+
+.table-sample {
+	border : 1px solid #D7DCE5;	
+}
+.table-sample tr{
+	border-bottom : 1px solid #D7DCE5;
+}
+a.thumb img{
+	border : 1px solid #555;
+	margin-bottom : 2px;
+}
+
+td, div, label, select{
+	font-size: 9pt;
+}
+
+label{
+	display:inline;
+}

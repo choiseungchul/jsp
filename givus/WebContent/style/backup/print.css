@@ -1,0 +1,108 @@
+.print-title{
+	font-size: 30px;
+	font-weight: bold;
+	text-align: center;
+}
+
+table {
+	color: black;
+	background-color: white;
+	table-layout: fixed;
+}
+
+table th{
+	color: black;
+	font-weight: normal;
+	text-align: center;
+	padding: 2px 2px 0px 2px;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	height: 21px; 
+	border-right: 1px solid black;
+	border-left: 1px solid black;
+}
+
+table td {
+	color: black;
+	padding: 3px 3px 0px 3px;
+	text-overflow: ellipsis; /* for browsers that supports it */  
+	-ms-text-overflow: ellipsis; /* for IE8 browsers that supports it */
+	overflow: hidden; /* for other browsers */
+	white-space: nowrap; /* force one-line text */
+	border-bottom: 1px solid black;
+}
+
+.print-table-list{
+	border: 1px solid black;
+	width: 100%;
+	margin-top: 10px;
+}
+
+.print-approval{
+	float: right;
+}
+.print-info{
+	float: left;
+}
+.print-info-item-list{
+	padding: 5px;
+}
+.print-info-item-value{
+	margin-left: 5px;
+}
+.print-info-item{
+	margin-top: 5px;
+}
+.print-top{
+	margin-top: 10px;
+	height: 100px;
+}
+.print-bottom{
+	margin-top: 20px;
+	text-align: center;
+	height: 50px;
+}
+.print-symbol{
+	
+}
+.print-sinshin{
+	margin-left: 5px;
+	font-weight: bold;
+	font-size: 14px;
+}
+.print-button-description{
+	margin-top: 10px;
+	height: 50px;
+	text-align: center;
+	font-size: 9pt;
+	color: red;
+}
+.print-company-info{
+	font-weight: bold;
+}
+.print-description{
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+	height:120px;
+}
+.print-description-text{
+	float:left;
+}
+.print-description-approval{
+	padding-top: 5px;
+	float:right;
+}
+.chulgoConfirm-title-area{
+	text-align: center;
+}
+.chulgoConfirm-title{
+	text-align: center;
+	font-family: '새굴림';
+	font-weight: bold;
+	padding: 3px;
+	font-size: 16pt;
+}
+.chulgoConfirm-title-sub{
+	margin-top:2px;
+}

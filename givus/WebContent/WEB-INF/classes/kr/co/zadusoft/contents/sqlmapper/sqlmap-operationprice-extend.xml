@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hospital">
+
+	<select id="countHospitalByRanking" parameterType="param" resultType="Integer">
+		SELECT 
+			COUNT(RD.id)
+		FROM Hospital H, RankingData RD
+		WHERE 
+			H.id = RD.hospitalId AND
+			<foreach collection="conditions" item="condition" open="(" separator="AND" close=")">
+				${condition.prefix} RD.${condition.name} ${condition.option} #{condition.value} ${condition.suffix}
+			</foreach>
+	</select>
+	
+	<select id="searchHospitalByRanking" parameterType="param" resultType="kr.co.zadusoft.contents.model.HospitalModel">
+		SELECT 
+			RD.ranking, H.*
+		FROM Hospital H, RankingData RD
+		WHERE 
+			H.id = RD.hospitalId AND
+			<foreach collection="conditions" item="condition" open="(" separator="AND" close=")">
+				${condition.prefix} RD.${condition.name} ${condition.option} #{condition.value} ${condition.suffix}
+			</foreach>
+		ORDER BY
+			RD.ranking ASC
+		<if test="limitStart >= 0">
+		LIMIT #{limitStart}, #{limitSize}
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,37 @@
+@import "/mrp/style/table.css";
+
+.table-image-list{
+	padding: 4px 2px 0px 2px;
+	border-top: 1px solid #cbcbcb;
+	border-bottom: 4px solid #d7dce5;
+	height:100%;
+	padding: 5px;
+}
+
+.table-image-list tr{
+	height: 200px;
+}
+
+.table-data {
+	border: 1px solid #d7dce5;
+	width: 170px;
+	float: left;
+	margin: 5px;
+	padding-top: 5px;
+}
+
+.table-data-last {
+}
+
+.table-data-value{
+	margin-bottom: 5px;
+	text-align:center;
+}
+
+img{
+	/* border: 1px solid black; */
+}
+
+.table-nodata-div{
+	text-align:center;
+}

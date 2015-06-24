@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans	xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+	>
+	<bean id="funcRoleList" class="dynamic.web.func.Function" parent="funcDefault">
+		<property name="id" value="ROA"/>
+		<property name="title" value="권한 관리"/>
+		<property name="model" value="kr.co.zadusoft.contents.model.RoleModel"/>
+		<!-- header value must consist of model's properties [property name]:[column width]:[align]	-->
+		<property name="header" value="user:80:::권한부여, name:200, description:*:left"/>
+		<property name="width" value="1000"/>
+		<!-- view property used by viewResolver -->
+		<property name="view" value="dynamic/web/table"/>
+		<property name="url" value="list.do"/>
+		<property name="dao" ref="roleService"/>
+		<property name="useNavigation" value="true"/>
+		<property name="pageSize" value="20"/>
+		<property name="role" value="systemManager"/>
+		<property name="renders">
+			<list>
+				<ref bean="render.role.name"/>
+				<ref bean="render.role.user"/>
+			</list>
+		</property>
+		<property name="buttons">
+			<list>
+				<ref bean="button.role.create"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="funcRoleEdit" class="dynamic.web.func.Function" parent="funcRoleList">
+		<property name="id" value="ROB"/>
+		<property name="title" value="권한 등록 / 수정"/>
+		<property name="header" value="code:200, name:350, description:*"/>
+		<property name="view" value="dynamic/web/edit"/>
+		<property name="successView" value="redirect:/list.do?fid=f{funcRoleList}"/>
+		<property name="url" value="edit.do"/>
+		<property name="buttons">
+			<list>
+				<ref bean="button.common.cancel"/>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- render -->
+	<bean id="render.role.name" class="dynamic.web.view.RenderText">
+		<property name="name" value="name"/>
+		<property name="icon" value="link"/>
+		<property name="link" value="/edit.do?fid=f{funcRoleEdit}&amp;action=modify&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<bean id="render.role.user" class="dynamic.web.view.RenderButton">
+		<property name="name" value="user"/>
+		<property name="icon" value="user_plus"/>
+		<property name="link" value="/list.do?fid=f{funcRoleUserList}&amp;id=p{id}"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+	
+	<!-- button -->
+	<bean id="button.role.create" class="dynamic.web.view.Button">
+		<property name="name" value="create"/>
+		<property name="title" value="권한 등록"/>
+		<property name="link" value="/edit.do?fid=f{funcRoleEdit}&amp;action=create"/>
+		<property name="useXPath" value="true"/>
+	</bean>
+</beans>

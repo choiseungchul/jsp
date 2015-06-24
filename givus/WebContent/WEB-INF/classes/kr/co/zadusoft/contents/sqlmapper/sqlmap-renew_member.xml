@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="renew_member">
+	
+	<!-- 이메일 중복확인 -->
+	<select id="email_check" resultType="java.lang.Integer">
+		select count(*) as cnt from User 
+		where email = #{email};
+	</select>
+	
+	<!-- 닉네임 중복확인 -->
+	<select id="nick_check" resultType="java.lang.Integer">
+		select count(*) as cnt from User 
+		where account = #{name};
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="add_user" parameterType="java.util.HashMap">
+		insert into User
+		(
+			email, name,  account, createDate, password, userType, birthday, gender, userStatus, is_fbuser
+		)
+		values
+		(
+			#{email}, #{name}, #{name}, now(), password(#{password}), #{userType}, #{birthday}, #{gender}, #{userStatus}, #{is_fbuser}
+		)
+		<selectKey keyProperty="id" resultType="java.lang.Integer">
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+	
+	<!-- 회원가입 - 페이스북 -->
+	<insert id="add_user_fb" parameterType="java.util.HashMap">
+		insert into User
+		(
+			email, name,  account, createDate, userType, birthday, gender, userStatus, is_fbuser, facebook_id, password
+		)
+		values
+		(
+			#{email}, #{name}, #{name}, now(), #{userType}, #{birthday}, #{gender}, #{userStatus}, #{is_fbuser}, #{facebook_id}, 'fbuser'
+		)
+		<selectKey keyProperty="id" resultType="java.lang.Integer">
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+	
+	<!-- 로그인 체크 -->
+	<select id="login_check" resultType="java.util.HashMap">
+		select u.*, uhc.status
+		from User as u
+		left join UserConnectHospital as uhc
+		on u.id = uhc.userId
+		where email = #{email} AND password = password(#{pass}) AND userStatus = 'A';
+	</select>
+	
+	<!-- 페이스북 로그인 체크 -->
+	<select id="login_check_facebook" resultType="java.util.HashMap">
+		select u.*, uhc.status
+		from User as u
+		left join UserConnectHospital as uhc
+		on u.id = uhc.userId
+		where email = #{email} AND facebook_id = #{facebook_id} AND userStatus = 'A'
+	</select>
+	
+	<insert id="login_log" statementType="CALLABLE" parameterType="java.util.HashMap">
+	{
+		call insert_login_log( #{userid}, #{user_email}, #{ipaddress}, #{login_error}, #{is_suc} )
+	}
+	</insert>
+	
+	<!-- 자동로그인 키값저장 -->
+	<update id="update_user_key"  parameterType="java.util.HashMap">
+		update User set login_key = #{key} where email = #{email};
+	</update>
+	
+	<!-- 자동 로그인 체크 -->
+	<select id="autologin_check" resultType="java.util.HashMap">
+		select u.*, uhc.status
+		from User as u
+		left join UserConnectHospital as uhc
+		on u.id = uhc.userId
+		where u.email = #{email} AND u.login_key = #{login_key} AND u.userStatus = 'A';
+	</select>
+	
+	<!-- 병원사용자의 병원등록 승인여부 -->
+	<select id="get_h_u_connected" resultType="java.util.HashMap">
+		select * from UserConnectHospital
+		where userId = #{uid};
+	</select>
+	
+</mapper>

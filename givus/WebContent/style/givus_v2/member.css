@@ -1,0 +1,144 @@
+@CHARSET "UTF-8";
+.login_container{
+	width: 492px;
+	margin: 0 auto;
+}
+.login_box{
+	width: 446px;
+	height: 289px;
+	border: 2px solid #f2f2f2;
+	padding-left: 21px;
+	padding-right: 21px;
+}
+.title{
+	height: 30px;
+	line-height: 30px;
+	font-size: 16px;
+	color: #444;
+	padding-top: 12px;
+	font-weight: bold;
+}
+.input{
+	
+}
+.input input{
+	height: 31px;
+	line-height: 31px;
+	border: 1px solid #c9c9c9;
+	width: 426px;
+}
+.login_title{
+	font-size: 31px;
+	padding-top: 79px;
+	padding-bottom: 23px;
+}
+.auto_login{
+	text-align: right;
+	height: 35px;
+	line-height: 35px;
+	padding-bottom: 5px;
+}
+.login_btns{
+	height: 33px;
+}
+.btn.login{
+	display:inline-block;
+	*zoom:1;
+	height: 33px;
+	width: 444px;
+	text-align: center;
+	line-height: 33px;
+	color: #fff;
+}
+.btn.login.skyblue{
+	background-color: #198aee;
+}
+.btn.login.darkblue{
+	background-color: #3b5998;
+}
+.login_btn_line{
+	height: 1px;
+	background-color: #ccc;
+	width: 436px;
+	margin: 0 auto;
+	margin-top: 9px;
+	margin-bottom: 9px;
+}
+.member_btns{
+	height: 43px;
+	background-color: #f2f2f2;
+}
+.member_btns a{
+	float: left;
+	display: block;
+	width: 246px;
+	height: 43px;
+	line-height: 43px;
+	text-align: center;
+	color: #444;
+	font-size: 16px;
+}
+.member_btns a.first{
+	background: url("../../img/member/line_bg1.png") right center no-repeat;
+}
+.input_table{
+	margin-left: 68px;
+	padding-top: 80px;
+	width: 496px;
+}
+.logos{
+	text-align: center;
+	width:396px;
+	padding-top: 145px;
+}
+.logos_text1{
+	padding-top: 32px;
+}
+.logos_text1 p{
+	font-size: 44px;
+	color: #022e56;
+}
+.logos_text2{
+	padding-top: 16px;
+}
+.logos_text2 p{
+	color: #022e56;
+	font-size: 22px;
+}
+.logos_text1 p strong{
+	color: #198aee;
+	font-size: 48px;
+}
+.input_table h4{
+	font-size: 31px;
+	font-weight: bold;
+	padding-bottom: 24px;
+}
+.join_box{
+	border: 4px solid #f2f2f2;
+	padding-left: 21px;
+	padding-right: 21px;
+	padding-bottom: 19px;
+}
+.input_other_tb td{
+	height: 40px;
+	color: #444;
+	font-weight: bold;
+	font-size: 16px;
+}
+.input_other{
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+.join_btns{
+	height: 43px;
+	background-color: #f2f2f2;
+	text-align: center;
+	line-height: 43px;
+	font-size: 16px;
+	font-weight: bold;
+}
+.nick_alert{
+	font-size: 14px;
+	font-weight: normal;
+}

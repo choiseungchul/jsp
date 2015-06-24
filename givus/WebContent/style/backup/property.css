@@ -1,0 +1,52 @@
+
+.property-list {
+	color: #181818;
+	background-color: white;
+	table-layout: fixed;
+	border-top: 4px solid #d7dce5;
+	margin-top: 10px;
+	border-bottom: 2px solid #d7dce5;
+	width: 100%;
+}
+
+table tr {
+	height: 23px;
+}
+
+table td {
+	color: #454545;
+	padding: 3px 3px 0px 3px;
+	text-overflow: ellipsis; /* for browsers that supports it */  
+	-ms-text-overflow: ellipsis; /* for IE8 browsers that supports it */
+	overflow: hidden; /* for other browsers */
+	white-space: nowrap; /* force one-line text */
+	border-bottom: 1px solid #d7dce5;
+}
+
+.property-view, .property-edit {
+	width: 100%;
+}
+
+.property-title-td {
+	width: 150px;
+}
+
+.property-value-td {
+	width: auto;
+}
+.property-buttons, .property-edit-buttons {
+	margin-top: 10px;
+	height: 25px;
+}
+
+.property-image {
+	height:120px;
+}
+.property-error {
+	color: red;
+}
+.property-desc{
+	padding: 3px;
+	line-height: 120%;
+	color: blue;
+}

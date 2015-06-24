@@ -1,0 +1,50 @@
+@CHARSET "UTF-8";
+.hospital_tab ul li{
+	padding-left: 32px;
+	padding-right: 33px;
+	min-width: 55px;
+	width: auto;
+}
+.rv_board_sort{
+	height: 45px;
+	line-height: 45px;
+	text-align: right;
+	padding-right: 10px;
+}
+.rv_board_sort a{
+	margin-left: 17px;
+}
+.popular_news{
+	padding-bottom: 23px;
+	padding-top: 34px;
+}
+.popular_news .rb_ranklist_tb td{
+	height: 40px;
+}
+.rb_ranklist.news{
+	height: 220px;
+}
+.popular_news .rb_cont{
+	height: 232px;
+}
+.news_list{
+	width: 657px;
+}
+.news_list_tb td{
+	height: 36px;
+	border-bottom: 1px solid #dfdfdf;
+}
+.news_list_tb td.subject{
+	padding-left: 15px;
+	font-size: 14px;
+}
+.news_list_tb td.news_author{
+	font-size: 11px;
+	color: #840101;
+	text-align: center;
+}
+.news_list_tb td.date{
+	font-size: 11px;
+	text-align: center;
+	
+}

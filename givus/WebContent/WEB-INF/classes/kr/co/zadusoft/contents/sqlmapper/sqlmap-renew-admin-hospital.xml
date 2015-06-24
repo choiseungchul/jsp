@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="admin_hospital">
+	
+	<!-- 병원 목록 -->
+	<select id="get_list" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+		select h.*, hc.status as stat, hc.requestDate, hc.description as hc_desc, hc.approvalDate from Hospital as h
+		left join UserConnectHospital as hc
+		on h.id = hc.hospitalId
+		<if test="type != null and type eq 'D'.toString()">
+			where h.publishDate &lt;= now()
+		</if>
+		<if test="type != null and type eq 'N'.toString()">
+			where h.publishDate &gt; now() OR h.publishDate is null
+		</if>
+		<if test="type != null and type eq 'A'.toString()">
+			where 1 = 1
+		</if>
+		<if test="srch_code != null and srch_code != ''">
+			and ${srch_code} like '%${srch_text}%'
+		</if>		
+		order by h.createDate desc
+		limit #{start}, #{end}	 
+	</select>
+	<select id="get_count" resultType="java.lang.Integer">
+		select count(*) from 
+		Hospital as h
+		left join UserConnectHospital as hc
+		on h.id = hc.hospitalId
+		<if test="type != null and type eq 'D'.toString()">
+			where h.publishDate &lt;= now()
+		</if>
+		<if test="type != null and type eq 'N'.toString()">
+			where h.publishDate &gt; now() OR h.publishDate is null
+		</if>
+		<if test="type != null and type eq 'A'.toString()">
+			where 1 = 1
+		</if>
+		<if test="srch_code != null and srch_code != ''">
+			and ${srch_code} like '%${srch_text}%'
+		</if>
+	</select>
+	
+	<!-- 병원보기 -->
+	<select id="get_one" resultType="java.util.HashMap">
+		select h.*, hc.status as stat, hc.requestDate, hc.description as hc_desc, hc.approvalDate, hs.* from Hospital as h
+		left join UserConnectHospital as hc
+		on h.id = hc.hospitalId
+		left join HospitalStats as hs
+		on h.id = hs.hospitalId
+		where h.id = #{hid}
+	</select>	
+	
+	<!-- 가격정보 보기 -->
+	<select id="get_prices" resultType="java.util.HashMap">
+		select p.*, o.keywordId from OperationPrice as p
+		left join Operation as o
+		on p.operationId = o.id
+		where hospitalId = #{hid}
+	</select>
+	
+	<!-- 수술목록 보기 -->
+	<select id="get_surg" resultType="java.util.HashMap">
+		select k.name as keyname, o.* from Operation as o
+		left join Keyword k
+		on k.id = o.keywordId
+		where o.is_view = 'Y'
+		order by o.keywordId, o.sort asc
+	</select>
+	
+	<!-- 수술 카테고리 -->
+	<select id="get_surg_keyname" resultType="java.util.HashMap">
+		select * from Keyword 
+		where is_view = 'Y'
+	</select>
+	
+	<!-- 병원가격 입력 -->
+	<update id="set_price" statementType="CALLABLE" parameterType="java.util.HashMap">
+    {
+        call insert_hospital_price(#{hid}, #{oid}, #{price}, #{oname})
+    }
+	</update>
+	
+	<!-- 지역코드 -->
+	<select id="get_location" resultType="java.util.HashMap">
+		select * from Code 
+		where category = 'L'
+		order by sort asc
+	</select>
+	
+	<!-- 병원 수정 -->
+	<update id="mod_hospital" parameterType="java.util.HashMap">
+    	UPDATE Hospital SET 
+        			name = #{name}, tel = #{tel}, address = #{address},
+        			introduction = #{introduction}, specialistCount = #{specialistCount}, anestheticCount = #{anestheticCount}, publishDate = #{publishDate},
+        			homepage = #{homepage}, patientRoom = #{patientRoom}, recoveryRoom = #{recoveryRoom}, interpreter = #{interpreter}, pickupService = #{pickupService},
+        			mostOperation1 = #{mostOperation1}, mostOperation2 = #{mostOperation2}, scale = #{scale}, counselCount = #{counselCount},
+        			reviewPicCount = #{reviewPicCount}, foreignerReg = #{foreignerReg}, possibleSurgery = #{possibleSurgery}, hours = #{hours}, fax = #{fax},
+        			address1 = #{address1}, address2 = #{address2}, business_id = #{business_id}, postalCode = #{post}, locationCode = #{location},
+        			grade = #{grade}, totalPoint = #{totalPoint}, expertPoint = #{expertPoint}, safePoint = #{safePoint}, satisfyPoint = #{satisfyPoint},
+        			sizePoint = #{sizePoint}, convenientPoint = #{convenientPoint}, updateDate = now()
+    	WHERE id = #{hid}
+    </update>    
+    <update id="mod_hstat" parameterType="java.util.HashMap">
+		UPDATE HospitalStats SET		
+			oralDoctorCount = #{hstat1}, dentalDoctorCount = #{hstat2}, breastDoctorCount = #{hstat3}, orthodonticDoctorCount = #{hstat4},
+			otolaryngologyDoctorCount = #{hstat5}, surgeryDoctorCount = #{hstat6}, plasticSurgeryDoctorCount = #{hstat7}, anestheticDoctorCount = #{hstat8},
+			familyMedicineDoctorCount = #{hstat9}, generalDoctorCount = #{hstat10}, clinicalDoctorCount = #{hstat11}, obesityDoctorCount = #{hstat12},
+			dermatologistDoctorCount = #{hstat13}, prostheticDoctorCount = #{hstat14}, implantsDoctorCount = #{hstat15}, obstetricsDoctorCount = #{hstat16}						 
+		WHERE hospitalId = #{hid}
+	</update>
+	<!-- 승인여부 수정 -->
+	<update id="mod_h_awc" parameterType="java.util.HashMap">
+		UPDATE UserConnectHospital SET		
+			status = #{status}, description = #{reason_desc}, approvalDate = now()						 
+		WHERE hospitalId = #{hid}
+	</update>
+	
+	<!-- 병원 추가 -->
+	<insert id="add_hospital" parameterType="java.util.HashMap">
+    	INSERT INTO Hospital
+			( `name`, `createDate`, `creator`, `tel`, `address`, `grade`, `locationCode`,
+			`introduction`, `specialistCount`, `anestheticCount`, `annualOperationCount`,
+			`totalPoint`,	`expertPoint`, `safePoint`, `satisfyPoint`, `sizePoint`, `convenientPoint`, 
+			`homepage`, `patientRoom`, `recoveryRoom`, `interpreter`, `pickupService`,
+			`mostOperation1`,`mostOperation2`,`viewCount`,`scale`,`counselCount`,`reviewPicCount`,
+			`foreignerReg`,`possibleSurgery`,`hours`,`fax`, 
+			`eyePoint`,`nosePoint`,`facePoint`,`breastPoint`,`bodyPoint`,`petitPoint`,
+			`publishDate`,`address1`,`address2`,`business_id`, `postalCode`)
+			VALUES
+			(
+				#{name}, now(), 0, #{tel}, #{address}, #{grade}, #{locationCode},
+				#{introduction}, #{specialistCount}, #{anestheticCount}, #{annualOperationCount},
+				#{totalPoint}, #{expertPoint}, #{safePoint}, #{satisfyPoint}, #{sizePoint}, #{convenientPoint},
+				#{homepage}, #{patientRoom}, #{recoveryRoom}, #{interpreter}, #{pickupService},
+				#{mostOperation1}, #{mostOperation2}, 0, #{scale}, #{counselCount}, #{reviewPicCount},
+				#{foreignerReg}, #{possibleSurgery}, #{hours}, #{fax},
+				#{eyePoint}, #{nosePoint}, #{facePoint}, #{breastPoint}, #{bodyPoint}, #{petitPoint},
+				#{publishDate},#{address1},#{address2},#{business_id},#{postalCode}
+			)
+		<selectKey keyProperty="hid" resultType="java.lang.Integer">	
+    		SELECT LAST_INSERT_ID();
+    	</selectKey>
+    </insert> 
+    <insert id="add_hstat" parameterType="java.util.HashMap">
+		insert into HospitalStats
+		(`oralDoctorCount`,`dentalDoctorCount`,`breastDoctorCount`,`orthodonticDoctorCount`,`otolaryngologyDoctorCount`,
+		`surgeryDoctorCount`,`plasticSurgeryDoctorCount`,`anestheticDoctorCount`,`familyMedicineDoctorCount`,`generalDoctorCount`,
+		`clinicalDoctorCount`,`obesityDoctorCount`,`dermatologistDoctorCount`,`prostheticDoctorCount`,`implantsDoctorCount`,
+		`obstetricsDoctorCount`,`hospitalId`)
+		values 
+		(
+			#{hstat1}, #{hstat2}, #{hstat3}, #{hstat4}, #{hstat5},
+			#{hstat6}, #{hstat7}, #{hstat8}, #{hstat9}, #{hstat10},
+			#{hstat11}, #{hstat12}, #{hstat13}, #{hstat14}, #{hstat15},
+			#{hstat16}, #{hid}
+		)
+	</insert>
+	<!-- 승인테이블 입력 -->
+	<update id="add_h_awc" parameterType="java.util.HashMap">
+		insert into UserConnectHospital
+		( status, description, approvalDate, hospitalId, requestDate, approver, userId )
+		values 
+		( 'A', '관리자 입력', now(), #{hid}, now(), 'givus@givus.co.kr', 1 ) 					
+	</update>
+	
+	
+</mapper>
